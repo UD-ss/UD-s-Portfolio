@@ -13,6 +13,20 @@
 .section-index {
     font-size: clamp(80px, 14vw, 224px) !important;
 }
+h2[class*="tracking-[0.3em]"] {
+    font-size: clamp(26px, 2.6vw, 40px) !important;
+    letter-spacing: 0.18em;
+}
+.hero-index,
+.section-index {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+}
+.hero-index.is-active,
+.section-index.is-active {
+    opacity: 0.12;
+}
 #about-content blockquote {
     font-size: clamp(30px, 4.5vw, 56px) !important;
 }

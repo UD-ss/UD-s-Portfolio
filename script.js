@@ -311,19 +311,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    const sectionIndices = document.querySelectorAll('.section-index, .hero-index');
-    sectionIndices.forEach((el) => {
-        gsap.to(el, {
-            scrollTrigger: {
-                trigger: el.parentElement,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 0.5
-            },
-            y: -80,
-            ease: "none"
+    const indexMarkers = document.querySelectorAll('.hero-index, .section-index');
+    function setActiveIndex(step) {
+        indexMarkers.forEach((el) => {
+            el.classList.toggle('is-active', parseInt(el.dataset.step, 10) === step);
         });
-    });
+    }
 
 
     const nav = document.getElementById('nav');
@@ -399,6 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (stepIndex >= targets.length) stepIndex = targets.length - 1;
 
         currentStep = stepIndex;
+        setActiveIndex(stepIndex);
         isLocked = true;
         clearTimeout(lockTimer);
 
@@ -494,6 +488,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
             currentStep = closest;
+            setActiveIndex(closest);
         }
     });
 
