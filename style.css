@@ -10,15 +10,32 @@ html {
     font-size: clamp(14px, 0.6vw + 12px, 22px);
 }
 #hero-name {
-    font-family: 'SeoulNotice', 'Pretendard', sans-serif;
-    font-weight: 900;
-    font-size: clamp(72px, 14vw, 176px) !important;
-    transition: color 0.35s ease;
-}
-#hero-name:hover {
     font-family: 'Pretendard', sans-serif;
     font-weight: 200;
-    letter-spacing: 0.02em;
+    font-size: clamp(72px, 14vw, 176px) !important;
+}
+.hero-name-layer {
+    display: block;
+    white-space: nowrap;
+    transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.hero-heavy {
+    font-family: 'SeoulNotice', 'Pretendard', sans-serif;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.hero-thin {
+    opacity: 0;
+}
+#hero-name:hover .hero-heavy {
+    opacity: 0;
+}
+#hero-name:hover .hero-thin {
+    opacity: 1;
 }
 .hero-index {
     font-size: clamp(128px, 22vw, 320px) !important;
