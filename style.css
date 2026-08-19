@@ -449,7 +449,7 @@ html.lenis, html.lenis body { height: auto; }
 
 
 .horizontal-pin-wrap { width: 100vw; height: 100vh; }
-.horizontal-scroll { width: max-content; height: 100%; align-items: flex-end; }
+.horizontal-scroll { width: max-content; height: 100%; align-items: flex-end; touch-action: pan-y; }
 .panel { padding-bottom: calc(50vh - 200px); }
 
 
