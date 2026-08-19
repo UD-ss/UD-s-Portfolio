@@ -203,8 +203,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (projectsSection && horizonTrack) {
         const panelStepX = () => {
+            const margin = window.innerWidth >= 768 ? 100 : 24;
             const panels = Array.from(horizonTrack.querySelectorAll('.panel'));
-            return panels.map((p) => -p.offsetLeft);
+            return panels.map((p) => margin - p.offsetLeft);
         };
         const minX = () => Math.min(0, ...panelStepX());
 
