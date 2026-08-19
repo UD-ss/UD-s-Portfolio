@@ -483,7 +483,7 @@ html.lenis, html.lenis body { height: auto; }
 
 .horizontal-pin-wrap { width: 100vw; height: 100vh; }
 .horizontal-scroll { width: max-content; height: 100%; align-items: center; touch-action: pan-y; }
-.panel { transform: translateY(50px); }
+.panel { transform: translateY(100px); }
 
 
 .magnetic-wrap { display: inline-block; }
