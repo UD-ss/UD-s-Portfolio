@@ -6,34 +6,37 @@
 }
 
 
+html {
+    font-size: clamp(14px, 0.6vw + 12px, 22px);
+}
 #hero-name {
     font-family: 'SeoulNotice', 'Pretendard', sans-serif;
     font-weight: 900;
-    font-size: clamp(4.5rem, 14vw, 11rem) !important;
+    font-size: clamp(72px, 14vw, 176px) !important;
 }
 .hero-index {
-    font-size: clamp(8rem, 22vw, 20rem) !important;
+    font-size: clamp(128px, 22vw, 320px) !important;
 }
 .section-index {
-    font-size: clamp(5rem, 14vw, 14rem) !important;
+    font-size: clamp(80px, 14vw, 224px) !important;
 }
 #about-content blockquote {
-    font-size: clamp(1.5rem, 4.5vw, 3.5rem) !important;
+    font-size: clamp(30px, 4.5vw, 56px) !important;
 }
 .panel h3 {
-    font-size: clamp(1.75rem, 5vw, 3.75rem) !important;
+    font-size: clamp(32px, 5vw, 60px) !important;
 }
 .panel > span {
-    font-size: clamp(5rem, 12vw, 12rem) !important;
+    font-size: clamp(96px, 12vw, 192px) !important;
 }
 .project-list-item h3 {
-    font-size: clamp(1.25rem, 3.5vw, 2.25rem) !important;
+    font-size: clamp(24px, 3.5vw, 36px) !important;
 }
 a[href^="mailto:"] .magnetic-inner {
-    font-size: clamp(1.75rem, 5vw, 3.75rem) !important;
+    font-size: clamp(30px, 5vw, 60px) !important;
 }
 .preloader-text {
-    font-size: clamp(2.5rem, 8vw, 6rem) !important;
+    font-size: clamp(60px, 8vw, 96px) !important;
 }
 
 
@@ -102,6 +105,8 @@ body {
 .text-muted-light { color: var(--muted) !important; }
 .border-border-light { border-color: var(--border) !important; }
 .text-point { color: var(--point) !important; }
+.bg-fg-light { background-color: var(--fg) !important; }
+.bg-border-light { background-color: var(--border) !important; }
 
 
 html.lenis, html.lenis body { height: auto; }

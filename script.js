@@ -80,7 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const themeToggle = document.getElementById('theme-toggle');
-    const savedTheme = localStorage.getItem('ud-theme') || 'light';
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('ud-theme') || (prefersDark ? 'dark' : 'light');
     document.body.setAttribute('data-theme', savedTheme);
 
     if (themeToggle) {
