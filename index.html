@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UD | Portfolio</title>
+    
+    <!-- Fonts: Space Grotesk (Display) + Pretendard (Body/Korean) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: { light: '#ece7dd', dark: '#1c1e20' },
+                        fg: { light: '#211d18', dark: '#e6e3de' },
+                        muted: { light: '#8a8378', dark: '#9b968e' },
+                        surface: { light: '#fffdf9', dark: '#242629' },
+                        border: { light: '#d8d1c4', dark: '#27292b' },
+                        point: '#0055ff',
+                    },
+                    fontFamily: {
+                        display: ['"Space Grotesk"', 'Pretendard', 'sans-serif'],
+                        sans: ['Pretendard', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="bg-bg-light text-fg-light antialiased font-sans overflow-x-hidden selection:bg-point selection:text-white" data-theme="light">
+
+    <!-- Preloader -->
+    <div id="preloader" class="fixed inset-0 z-[9999] bg-bg-light flex items-center justify-center">
+        <div class="text-center">
+            <span class="preloader-text text-6xl md:text-8xl font-display font-bold block">UD</span>
+            <div class="preloader-bar w-24 h-[2px] bg-border-light mx-auto mt-6 overflow-hidden">
+                <div class="preloader-fill h-full bg-fg-light"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div id="cursor" class="fixed top-0 left-0 pointer-events-none z-[9998] mix-blend-difference">
+        <div id="cursor-dot" class="w-2 h-2 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+        <div id="cursor-ring" class="w-10 h-10 border border-white rounded-full -translate-x-1/2 -translate-y-1/2 absolute top-0 left-0"></div>
+    </div>
+
+    <!-- Noise Overlay -->
+    <div class="noise-overlay"></div>
+
+    <!-- Navigation -->
+    <nav id="nav" class="fixed top-0 left-0 w-full z-[100] py-5 px-6 md:px-12 flex items-center justify-between transition-all duration-500 opacity-0">
+        <a href="#" class="font-display font-bold text-lg cursor-hover-target">UD.</a>
+        <div class="flex items-center gap-6">
+            <a href="#about" class="nav-link text-xs uppercase tracking-widest cursor-hover-target hidden md:block">About</a>
+            <a href="#skills" class="nav-link text-xs uppercase tracking-widest cursor-hover-target hidden md:block">Skills</a>
+            <a href="#projects" class="nav-link text-xs uppercase tracking-widest cursor-hover-target hidden md:block">Projects</a>
+            <a href="#contact" class="nav-link text-xs uppercase tracking-widest cursor-hover-target hidden md:block">Contact</a>
+            <button id="theme-toggle" class="w-8 h-8 rounded-full glass-pill flex items-center justify-center cursor-hover-target" aria-label="Toggle theme">
+                <!-- Moon icon (shown in Light mode) -->
+                <svg class="w-4 h-4 theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+                <!-- Sun icon (shown in Dark mode) -->
+                <svg class="w-4 h-4 theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Floating Section Dot Indicator (Desktop) -->
+    <div id="section-nav" class="fixed right-6 top-1/2 -translate-y-1/2 z-[90] hidden md:flex flex-col items-end gap-3 glass-pill py-4 px-2.5 rounded-full opacity-0 transition-opacity duration-500">
+        <button class="section-dot cursor-hover-target active" data-step="0" aria-label="Hero">
+            <span class="dot-label-wrap"><span class="dot-label">Hero</span></span>
+            <span class="dot-dot"></span>
+        </button>
+        <button class="section-dot cursor-hover-target" data-step="1" aria-label="About">
+            <span class="dot-label-wrap"><span class="dot-label">About</span></span>
+            <span class="dot-dot"></span>
+        </button>
+        <button class="section-dot cursor-hover-target" data-step="2" aria-label="Skills">
+            <span class="dot-label-wrap"><span class="dot-label">Skills</span></span>
+            <span class="dot-dot"></span>
+        </button>
+        <button class="section-dot cursor-hover-target" data-step="3" aria-label="Project 1">
+            <span class="dot-label-wrap"><span class="dot-label">Project 1</span></span>
+            <span class="dot-dot"></span>
+        </button>
+        <button class="section-dot cursor-hover-target" data-step="4" aria-label="Project 2">
+            <span class="dot-label-wrap"><span class="dot-label">Project 2</span></span>
+            <span class="dot-dot"></span>
+        </button>
+        <button class="section-dot cursor-hover-target" data-step="5" aria-label="Project 3">
+            <span class="dot-label-wrap"><span class="dot-label">Project 3</span></span>
+            <span class="dot-dot"></span>
+        </button>
+        <button class="section-dot cursor-hover-target" data-step="6" aria-label="More Projects">
+            <span class="dot-label-wrap"><span class="dot-label">More Projects</span></span>
+            <span class="dot-dot"></span>
+        </button>
+        <button class="section-dot cursor-hover-target" data-step="7" aria-label="Contact">
+            <span class="dot-label-wrap"><span class="dot-label">Contact</span></span>
+            <span class="dot-dot"></span>
+        </button>
+    </div>
+
+    <!-- ========== HERO ========== -->
+    <section id="hero" class="relative w-full h-screen flex flex-col justify-center items-center px-6 overflow-hidden">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+
+        <div class="text-center relative z-10">
+            <span class="hero-index text-[12rem] md:text-[20rem] font-display font-bold absolute -top-20 md:-top-32 left-1/2 -translate-x-1/2 opacity-[0.04] select-none pointer-events-none leading-none">01</span>
+            <h1 id="hero-name" class="hero-name text-8xl md:text-[11rem] font-display font-bold tracking-tighter leading-none relative z-10">UD</h1>
+            <div class="w-16 h-[1px] bg-current mx-auto my-8 opacity-20"></div>
+            <p id="hero-subtitle" class="text-lg md:text-xl font-light max-w-xl mx-auto leading-relaxed text-muted-light">
+                느낌 있는 코딩과 높은 품질의 로직을<br/>자연어로 설계하는 개발자
+            </p>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
+            <span class="text-[10px] uppercase tracking-[0.3em] text-muted-light">Scroll</span>
+            <div class="w-[1px] h-14 overflow-hidden">
+                <div class="scroll-line w-full h-full bg-current opacity-30"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ABOUT ========== -->
+    <section id="about" class="relative w-full min-h-screen flex flex-col justify-center px-6 md:px-16 overflow-hidden">
+        <span class="section-index text-[8rem] md:text-[14rem] font-display font-bold absolute -top-4 right-6 md:right-20 opacity-[0.03] select-none pointer-events-none leading-none">02</span>
+        
+        <div class="max-w-5xl mx-auto w-full relative z-10">
+            <div class="flex items-center gap-4 mb-16">
+                <div class="w-8 h-[1px] bg-current opacity-30"></div>
+                <h2 class="text-xs uppercase tracking-[0.3em] text-muted-light font-medium">02 / About Me</h2>
+            </div>
+
+            <div id="about-content" class="relative">
+                <blockquote class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-sans font-normal leading-[1.38] md:leading-[1.28] tracking-tight text-fg-light">
+                    수 많은 바이브 코딩 경험을 통해 여러 언어와 기술을 탐색하며 쌓은 이해도를 바탕으로,
+                    <span class="highlight-phrase">
+                        <span class="highlight-text">바이브 코딩의 품질을 뛰어넘는</span>
+                        <span class="highlight-line"></span>
+                    </span>
+                    결과물을 목표로 하는 개발자 유디(UD) 입니다.
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== SKILLS ========== -->
+    <section id="skills" class="relative w-full min-h-screen flex flex-col justify-center py-20 px-6 md:px-16 overflow-hidden">
+        <span class="section-index text-[8rem] md:text-[14rem] font-display font-bold absolute -top-4 left-6 md:left-20 opacity-[0.03] select-none pointer-events-none leading-none">03</span>
+
+        <div class="max-w-5xl mx-auto w-full relative z-10">
+            <div class="flex items-center gap-4 mb-20">
+                <div class="w-8 h-[1px] bg-current opacity-30"></div>
+                <h2 class="text-xs uppercase tracking-[0.3em] text-muted-light">Technologies Explored</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Skill Card 1: Frontend & Mobile -->
+                <div class="skill-card group cursor-hover-target" data-color="#3178c6">
+                    <div class="skill-card-inner p-8 rounded-2xl border border-border-light transition-all duration-500 relative overflow-hidden">
+                        <div class="skill-card-glow"></div>
+                        <div class="flex items-center justify-between mb-8 relative z-10">
+                            <h3 class="text-sm font-display font-semibold uppercase tracking-wider">Frontend & Mobile</h3>
+                            <span class="text-xs text-muted-light font-light">01</span>
+                        </div>
+                        <ul class="space-y-4 relative z-10">
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/react/61DAFB" alt="React" class="skill-logo w-4 h-4">
+                                React 19
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JS" class="skill-logo w-4 h-4">
+                                Vanilla JavaScript (ES6+)
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/kotlin/7F52FF" alt="Kotlin" class="skill-logo w-4 h-4">
+                                Kotlin · Jetpack Compose
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" alt="Tailwind" class="skill-logo w-4 h-4">
+                                Tailwind CSS · Konva.js
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/googlechrome/4285F4" alt="Chrome" class="skill-logo w-4 h-4">
+                                Chrome Extension MV3
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Skill Card 2: Backend & Architecture -->
+                <div class="skill-card group cursor-hover-target" data-color="#68a063">
+                    <div class="skill-card-inner p-8 rounded-2xl border border-border-light transition-all duration-500 relative overflow-hidden">
+                        <div class="skill-card-glow"></div>
+                        <div class="flex items-center justify-between mb-8 relative z-10">
+                            <h3 class="text-sm font-display font-semibold uppercase tracking-wider">Backend & Architecture</h3>
+                            <span class="text-xs text-muted-light font-light">02</span>
+                        </div>
+                        <ul class="space-y-4 relative z-10">
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/nodedotjs/5FA04E" alt="Node.js" class="skill-logo w-4 h-4">
+                                Node.js (Express)
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" class="skill-logo w-4 h-4">
+                                Python (FastAPI)
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/openjdk/FFFFFF" alt="Java" class="skill-logo w-4 h-4">
+                                Java 25 (Paper API, JDA)
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <span class="w-4 h-4 flex items-center justify-center"><i data-lucide="webhook" class="w-3.5 h-3.5 text-muted-light"></i></span>
+                                REST · WebSocket · SSE
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <span class="w-4 h-4 flex items-center justify-center"><i data-lucide="layers" class="w-3.5 h-3.5 text-muted-light"></i></span>
+                                Clean Architecture · MVVM
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Skill Card 3: AI / Vision -->
+                <div class="skill-card group cursor-hover-target" data-color="#ff6b35">
+                    <div class="skill-card-inner p-8 rounded-2xl border border-border-light transition-all duration-500 relative overflow-hidden">
+                        <div class="skill-card-glow"></div>
+                        <div class="flex items-center justify-between mb-8 relative z-10">
+                            <h3 class="text-sm font-display font-semibold uppercase tracking-wider">AI / Vision</h3>
+                            <span class="text-xs text-muted-light font-light">03</span>
+                        </div>
+                        <ul class="space-y-4 relative z-10">
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/pytorch/EE4C2C" alt="PyTorch" class="skill-logo w-4 h-4">
+                                YOLOv8 · LaMa Inpainting
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/pytorch/EE4C2C" alt="SD" class="skill-logo w-4 h-4">
+                                Stable Diffusion (SDXL) · LoRA
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/ollama/FFFFFF" alt="Ollama" class="skill-logo w-4 h-4">
+                                Ollama Local LLM
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/googlegemini/8E75B2" alt="Gemini" class="skill-logo w-4 h-4">
+                                Gemini Vision API
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/onnx/005CED" alt="ONNX" class="skill-logo w-4 h-4">
+                                ONNX Runtime · CUDA
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Skill Card 4: DB & DevOps -->
+                <div class="skill-card group cursor-hover-target" data-color="#336791">
+                    <div class="skill-card-inner p-8 rounded-2xl border border-border-light transition-all duration-500 relative overflow-hidden">
+                        <div class="skill-card-glow"></div>
+                        <div class="flex items-center justify-between mb-8 relative z-10">
+                            <h3 class="text-sm font-display font-semibold uppercase tracking-wider">DB & DevOps</h3>
+                            <span class="text-xs text-muted-light font-light">04</span>
+                        </div>
+                        <ul class="space-y-4 relative z-10">
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL" class="skill-logo w-4 h-4">
+                                PostgreSQL (Supabase)
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/sqlite/003B57" alt="SQLite" class="skill-logo w-4 h-4">
+                                SQLite (Room)
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/git/F05032" alt="Git" class="skill-logo w-4 h-4">
+                                Git · PM2 Cluster · Vercel
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <img src="https://cdn.simpleicons.org/vitest/6E9F18" alt="Vitest" class="skill-logo w-4 h-4">
+                                Playwright · Vitest · JUnit
+                            </li>
+                            <li class="skill-item flex items-center gap-3 text-sm font-light">
+                                <span class="w-4 h-4 flex items-center justify-center"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-muted-light"></i></span>
+                                TLS Pinning · Biometric Auth
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== PROJECTS (Highlighted - Horizontal Scroll) ========== -->
+    <section id="projects" class="w-full bg-fg-light text-bg-light overflow-hidden relative">
+        <span class="section-index text-[8rem] md:text-[14rem] font-display font-bold absolute -top-4 right-6 md:right-20 opacity-[0.06] select-none pointer-events-none leading-none">04</span>
+
+        <div class="max-w-5xl mx-auto px-6 pt-40 pb-16 relative z-10">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-8 h-[1px] bg-current opacity-30"></div>
+                <h2 class="text-xs uppercase tracking-[0.3em] text-muted-dark">Highlighted Projects</h2>
+            </div>
+        </div>
+        
+        <div class="horizontal-pin-wrap w-full h-screen flex items-center">
+            <div class="horizontal-scroll flex px-6 md:px-20 gap-16 md:gap-24">
+                
+                <!-- Project 1: Manga-Translate -->
+                <div class="panel w-[85vw] md:w-[55vw] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
+                    <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">01</span>
+                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-10 relative group">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i data-lucide="languages" class="w-16 h-16 text-[#333] group-hover:text-point transition-colors duration-700"></i>
+                        </div>
+                        <div class="project-hover-label">View Project</div>
+                    </div>
+                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-4 tracking-tight">Manga-Translate</h3>
+                    <p class="text-muted-dark font-light text-base md:text-lg mb-8 leading-relaxed max-w-lg">
+                        YOLOv8, Manga-OCR, LaMa Inpainting, 로컬 LLM 및 React Konva를 결합하여 이미지 내 텍스트를 실시간 감지·제거·번역·편집할 수 있는 풀스택 플랫폼.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag">React 19</span>
+                        <span class="tag">FastAPI</span>
+                        <span class="tag">YOLOv8</span>
+                        <span class="tag">PyTorch</span>
+                    </div>
+                </div>
+
+                <!-- Project 2: UD's Space -->
+                <div class="panel w-[85vw] md:w-[55vw] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
+                    <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">02</span>
+                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-10 relative group">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i data-lucide="bot" class="w-16 h-16 text-[#333] group-hover:text-point transition-colors duration-700"></i>
+                        </div>
+                        <div class="project-hover-label">View Project</div>
+                    </div>
+                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-4 tracking-tight">UD's Space</h3>
+                    <p class="text-muted-dark font-light text-base md:text-lg mb-8 leading-relaxed max-w-lg">
+                        Node.js 기반 봇 클러스터 및 Supabase 연동 커뮤니티
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag">Node.js</span>
+                        <span class="tag">Discord.js</span>
+                        <span class="tag">Supabase</span>
+                    </div>
+                </div>
+
+                <!-- Project 3: FlowPlan -->
+                <div class="panel w-[85vw] md:w-[55vw] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
+                    <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">03</span>
+                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-10 relative group">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i data-lucide="calendar-clock" class="w-16 h-16 text-[#333] group-hover:text-point transition-colors duration-700"></i>
+                        </div>
+                        <div class="project-hover-label">View Project</div>
+                    </div>
+                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-4 tracking-tight">FlowPlan</h3>
+                    <p class="text-muted-dark font-light text-base md:text-lg mb-8 leading-relaxed max-w-lg">
+                        시험 범위 역산 스케줄링 및 진도 변경 시 실시간 자동 재분배 알고리즘을 갖춘 클린 아키텍처 기반 오프라인 퍼스트 안드로이드 플래너.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag">Jetpack Compose</span>
+                        <span class="tag">Clean Architecture</span>
+                        <span class="tag">Room</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== MORE PROJECTS ========== -->
+    <section id="more-projects" class="w-full min-h-screen flex flex-col justify-center py-20 px-6 md:px-16 relative overflow-hidden">
+        <span class="section-index text-[8rem] md:text-[14rem] font-display font-bold absolute -top-4 left-6 md:left-20 opacity-[0.03] select-none pointer-events-none leading-none">05</span>
+
+        <div class="max-w-5xl mx-auto w-full relative z-10">
+            <div class="flex items-center gap-4 mb-16">
+                <div class="w-8 h-[1px] bg-current opacity-30"></div>
+                <h2 class="text-xs uppercase tracking-[0.3em] text-muted-light font-medium">05 / More Projects</h2>
+            </div>
+            
+            <div class="project-list">
+                <a href="#" class="project-list-item group cursor-hover-target block py-10 border-t border-border-light relative overflow-hidden transition-colors duration-500">
+                    <div class="project-list-bg"></div>
+                    <div class="flex items-center justify-between relative z-10">
+                        <div>
+                            <h3 class="text-2xl md:text-4xl font-display font-semibold mb-2 transition-transform duration-500 group-hover:translate-x-4 tracking-tight">Automatic Illustration Sorter</h3>
+                            <p class="text-sm text-muted-light font-light transition-all duration-500 group-hover:translate-x-4">ONNX 듀얼 AI 캐스케이드 및 pHash 초고속 이미지 정렬</p>
+                        </div>
+                        <div class="flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <span class="text-xs uppercase tracking-widest text-muted-light hidden md:inline">Python · ONNX</span>
+                            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="#" class="project-list-item group cursor-hover-target block py-10 border-t border-border-light relative overflow-hidden transition-colors duration-500">
+                    <div class="project-list-bg"></div>
+                    <div class="flex items-center justify-between relative z-10">
+                        <div>
+                            <h3 class="text-2xl md:text-4xl font-display font-semibold mb-2 transition-transform duration-500 group-hover:translate-x-4 tracking-tight">AutoIllust</h3>
+                            <p class="text-sm text-muted-light font-light transition-all duration-500 group-hover:translate-x-4">로컬 LLM 자연어 쿼리 기반 멀티 플랫폼 이미지 수집 풀스택</p>
+                        </div>
+                        <div class="flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <span class="text-xs uppercase tracking-widest text-muted-light hidden md:inline">Ollama · FastAPI</span>
+                            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="#" class="project-list-item group cursor-hover-target block py-10 border-t border-border-light relative overflow-hidden transition-colors duration-500">
+                    <div class="project-list-bg"></div>
+                    <div class="flex items-center justify-between relative z-10">
+                        <div>
+                            <h3 class="text-2xl md:text-4xl font-display font-semibold mb-2 transition-transform duration-500 group-hover:translate-x-4 tracking-tight">Auto-DL</h3>
+                            <p class="text-sm text-muted-light font-light transition-all duration-500 group-hover:translate-x-4">Chrome MV3 File System Access API 기반 미디어 수집 확장 프로그램</p>
+                        </div>
+                        <div class="flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <span class="text-xs uppercase tracking-widest text-muted-light hidden md:inline">JS (MV3)</span>
+                            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="#" class="project-list-item group cursor-hover-target block py-10 border-t border-border-light border-b relative overflow-hidden transition-colors duration-500">
+                    <div class="project-list-bg"></div>
+                    <div class="flex items-center justify-between relative z-10">
+                        <div>
+                            <h3 class="text-2xl md:text-4xl font-display font-semibold mb-2 transition-transform duration-500 group-hover:translate-x-4 tracking-tight">Studio Diffusion & LoRA Trainer</h3>
+                            <p class="text-sm text-muted-light font-light transition-all duration-500 group-hover:translate-x-4">HuggingFace Diffusers SDXL/Pony WebGUI 및 LoRA 학습 파이프라인</p>
+                        </div>
+                        <div class="flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <span class="text-xs uppercase tracking-widest text-muted-light hidden md:inline">PyTorch</span>
+                            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CONTACT ========== -->
+    <section id="contact" class="w-full min-h-screen flex flex-col justify-center items-center px-6 relative overflow-hidden">
+        <span class="section-index text-[8rem] md:text-[14rem] font-display font-bold absolute -top-4 right-6 md:right-20 opacity-[0.03] select-none pointer-events-none leading-none">06</span>
+
+        <div class="max-w-5xl mx-auto w-full text-center relative z-10">
+            <div class="flex items-center justify-center gap-4 mb-20">
+                <div class="w-8 h-[1px] bg-current opacity-30"></div>
+                <h2 class="text-xs uppercase tracking-[0.3em] text-muted-light">Get in Touch</h2>
+                <div class="w-8 h-[1px] bg-current opacity-30"></div>
+            </div>
+
+            <a href="mailto:wjddmstntn@gmail.com" class="magnetic-wrap inline-block p-4 cursor-hover-target">
+                <div class="magnetic-inner text-3xl md:text-6xl font-display font-bold hover:text-point transition-colors duration-500 leading-tight tracking-tight">
+                    wjddmstntn<br class="md:hidden">@gmail.com
+                </div>
+            </a>
+
+            <div class="mt-12 flex flex-col items-center gap-4">
+                <a href="https://github.com/WD-GTY" target="_blank" rel="noreferrer" class="magnetic-wrap inline-block p-3 cursor-hover-target">
+                    <div class="magnetic-inner flex items-center gap-3 text-base md:text-lg font-light hover:text-point transition-colors duration-500">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                        GitHub
+                    </div>
+                </a>
+                <a href="https://discord.com/users/1265859527417266206" target="_blank" rel="noreferrer" class="magnetic-wrap inline-block p-3 cursor-hover-target">
+                    <div class="magnetic-inner flex items-center gap-3 text-base md:text-lg font-light hover:text-point transition-colors duration-500">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                        Discord
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-32 text-center">
+            <p class="text-[10px] uppercase tracking-[0.3em] text-muted-light">© 2026 UD · Editorial & Human-crafted</p>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/split-type"></script>
+    <script src="script.js"></script>
+</body>
+</html>
