@@ -13,6 +13,12 @@ html {
     font-family: 'SeoulNotice', 'Pretendard', sans-serif;
     font-weight: 900;
     font-size: clamp(72px, 14vw, 176px) !important;
+    transition: color 0.35s ease;
+}
+#hero-name:hover {
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 200;
+    letter-spacing: 0.02em;
 }
 .hero-index {
     font-size: clamp(128px, 22vw, 320px) !important;
@@ -28,6 +34,9 @@ html {
 }
 .panel > span {
     font-size: clamp(96px, 12vw, 192px) !important;
+}
+.panel p {
+    min-height: 4.875em;
 }
 .project-list-item h3 {
     font-size: clamp(24px, 3.5vw, 36px) !important;
