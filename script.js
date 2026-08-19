@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     ease: "power2.in",
                     onComplete: () => {
                         nameIndex = (nameIndex + 1) % names.length;
-                        heroName.querySelectorAll('.hero-name-layer').forEach(el => el.innerText = names[nameIndex]);
+                        heroName.innerText = names[nameIndex];
                         gsap.fromTo(heroName,
                             { y: 15, opacity: 0 },
                             { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }
