@@ -231,16 +231,21 @@ html.lenis, html.lenis body { height: auto; }
     align-items: center;
     justify-content: flex-end;
     width: auto;
-    height: 8px;
+    min-width: 26px;
+    max-width: 26px;
+    height: 28px;
+    padding: 0;
     border-radius: 999px;
     background: transparent;
     border: 1px solid transparent;
     outline: none;
-    transition: height 0.55s cubic-bezier(0.32, 0.72, 0, 1),
-                background-color 0.45s ease,
-                border-color 0.45s ease;
+    transition: max-width 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+                background-color 0.4s ease,
+                border-color 0.4s ease;
 }
 .section-dot .dot-label-wrap {
+    display: flex;
+    align-items: center;
     overflow: hidden;
     max-width: 0;
     transition: max-width 0.55s cubic-bezier(0.32, 0.72, 0, 1);
@@ -253,11 +258,11 @@ html.lenis, html.lenis body { height: auto; }
     text-transform: uppercase;
     white-space: nowrap;
     color: var(--fg);
-    padding-left: 10px;
+    padding-left: 12px;
     padding-right: 6px;
     opacity: 0;
-    transform: translateX(-6px);
-    transition: opacity 0.3s ease 0.05s,
+    transform: translateX(-8px);
+    transition: opacity 0.3s ease 0.08s,
                 transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .section-dot .dot-dot {
@@ -273,12 +278,12 @@ html.lenis, html.lenis body { height: auto; }
                 transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .section-dot:hover {
-    height: 28px;
-    background: var(--glass-bg);
-    border-color: var(--glass-border);
+    max-width: 200px;
+    background: var(--card-bg);
+    border-color: var(--card-border);
 }
 .section-dot:hover .dot-label-wrap {
-    max-width: 150px;
+    max-width: 160px;
 }
 .section-dot:hover .dot-dot {
     opacity: 1;
@@ -292,6 +297,10 @@ html.lenis, html.lenis body { height: auto; }
     background-color: var(--point);
     box-shadow: 0 0 10px var(--point);
     transform: scale(1.3);
+}
+#section-nav:hover,
+#section-nav:focus-within {
+    transform: translateY(-50%);
 }
 [data-theme="light"] .theme-icon-sun { display: none !important; }
 [data-theme="light"] .theme-icon-moon { display: block !important; }
