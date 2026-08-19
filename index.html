@@ -39,6 +39,13 @@
 </head>
 
 <body class="bg-bg-light text-fg-light antialiased font-sans overflow-x-hidden selection:bg-point selection:text-white" data-theme="light">
+<script>
+    (function () {
+        var saved = localStorage.getItem('ud-theme');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.body.setAttribute('data-theme', theme);
+    })();
+</script>
 
 
     <div id="preloader" class="fixed inset-0 z-[9999] bg-bg-light flex items-center justify-center">
