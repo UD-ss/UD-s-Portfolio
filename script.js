@@ -34,9 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!preloader.classList.contains('loaded')) {
             preloader.classList.add('loaded');
             const nav = document.getElementById('nav');
-            const sectionNav = document.getElementById('section-nav');
             if (nav) nav.style.opacity = '1';
-            if (sectionNav) sectionNav.style.opacity = '1';
             initHeroAnimations();
         }
     }
@@ -384,19 +382,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 lockTimer = setTimeout(() => { isLocked = false; }, 250);
             }
         });
-
-        updateDots(stepIndex);
-    }
-
-    function updateDots(activeIdx) {
-        const dots = document.querySelectorAll('.section-dot');
-        dots.forEach((dot, idx) => {
-            if (idx === activeIdx) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
     }
 
 
@@ -446,14 +431,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: true });
 
 
-    document.querySelectorAll('.section-dot').forEach((dot) => {
-        dot.addEventListener('click', () => {
-            const step = parseInt(dot.getAttribute('data-step'), 10);
-            goToStep(step);
-        });
-    });
-
-
     const navStepMap = {
         '#hero': 0,
         '#about': 1,
@@ -489,7 +466,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
             currentStep = closest;
-            updateDots(closest);
         }
     });
 
