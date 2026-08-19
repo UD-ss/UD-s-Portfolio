@@ -84,42 +84,6 @@
     </nav>
 
 
-    <div id="section-nav" class="fixed right-6 top-1/2 -translate-y-1/2 z-[90] hidden md:flex flex-col items-end gap-3 glass-pill py-4 px-2.5 rounded-full opacity-0 transition-opacity duration-500">
-        <button class="section-dot cursor-hover-target active" data-step="0" aria-label="Hero">
-            <span class="dot-label-wrap"><span class="dot-label">Hero</span></span>
-            <span class="dot-dot"></span>
-        </button>
-        <button class="section-dot cursor-hover-target" data-step="1" aria-label="About">
-            <span class="dot-label-wrap"><span class="dot-label">About</span></span>
-            <span class="dot-dot"></span>
-        </button>
-        <button class="section-dot cursor-hover-target" data-step="2" aria-label="Skills">
-            <span class="dot-label-wrap"><span class="dot-label">Skills</span></span>
-            <span class="dot-dot"></span>
-        </button>
-        <button class="section-dot cursor-hover-target" data-step="3" aria-label="Project 1">
-            <span class="dot-label-wrap"><span class="dot-label">Project 1</span></span>
-            <span class="dot-dot"></span>
-        </button>
-        <button class="section-dot cursor-hover-target" data-step="4" aria-label="Project 2">
-            <span class="dot-label-wrap"><span class="dot-label">Project 2</span></span>
-            <span class="dot-dot"></span>
-        </button>
-        <button class="section-dot cursor-hover-target" data-step="5" aria-label="Project 3">
-            <span class="dot-label-wrap"><span class="dot-label">Project 3</span></span>
-            <span class="dot-dot"></span>
-        </button>
-        <button class="section-dot cursor-hover-target" data-step="6" aria-label="More Projects">
-            <span class="dot-label-wrap"><span class="dot-label">More Projects</span></span>
-            <span class="dot-dot"></span>
-        </button>
-        <button class="section-dot cursor-hover-target" data-step="7" aria-label="Contact">
-            <span class="dot-label-wrap"><span class="dot-label">Contact</span></span>
-            <span class="dot-dot"></span>
-        </button>
-    </div>
-
-
     <section id="hero" class="relative w-full h-screen flex flex-col justify-center items-center px-6 overflow-hidden">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
@@ -328,14 +292,14 @@
 
                 <div class="panel w-[85vw] md:w-[55vw] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
                     <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">01</span>
-                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-10 relative group">
+                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-5 md:mb-7 relative group">
                         <div class="absolute inset-0 flex items-center justify-center">
                             <i data-lucide="languages" class="w-16 h-16 text-[#333] group-hover:text-point transition-colors duration-700"></i>
                         </div>
                         <div class="project-hover-label">View Project</div>
                     </div>
-                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-4 tracking-tight">Manga-Translate</h3>
-                    <p class="text-muted-dark font-light text-base md:text-lg mb-8 leading-relaxed max-w-lg">
+                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-2 md:mb-3 tracking-tight">Manga-Translate</h3>
+                    <p class="text-muted-dark font-light text-base md:text-lg mb-4 md:mb-5 leading-relaxed max-w-lg">
                         YOLOv8, Manga-OCR, LaMa Inpainting, 로컬 LLM 및 React Konva를 결합하여 이미지 내 텍스트를 실시간 감지·제거·번역·편집할 수 있는 풀스택 플랫폼.
                     </p>
                     <div class="flex flex-wrap gap-2">
@@ -349,14 +313,14 @@
 
                 <div class="panel w-[85vw] md:w-[55vw] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
                     <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">02</span>
-                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-10 relative group">
+                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-5 md:mb-7 relative group">
                         <div class="absolute inset-0 flex items-center justify-center">
                             <i data-lucide="bot" class="w-16 h-16 text-[#333] group-hover:text-point transition-colors duration-700"></i>
                         </div>
                         <div class="project-hover-label">View Project</div>
                     </div>
-                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-4 tracking-tight">UD's Space</h3>
-                    <p class="text-muted-dark font-light text-base md:text-lg mb-8 leading-relaxed max-w-lg">
+                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-2 md:mb-3 tracking-tight">UD's Space</h3>
+                    <p class="text-muted-dark font-light text-base md:text-lg mb-4 md:mb-5 leading-relaxed max-w-lg">
                         Node.js 기반 봇 클러스터 및 Supabase 연동 커뮤니티
                     </p>
                     <div class="flex flex-wrap gap-2">
@@ -369,14 +333,14 @@
 
                 <div class="panel w-[85vw] md:w-[55vw] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
                     <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">03</span>
-                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-10 relative group">
+                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-5 md:mb-7 relative group">
                         <div class="absolute inset-0 flex items-center justify-center">
                             <i data-lucide="calendar-clock" class="w-16 h-16 text-[#333] group-hover:text-point transition-colors duration-700"></i>
                         </div>
                         <div class="project-hover-label">View Project</div>
                     </div>
-                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-4 tracking-tight">FlowPlan</h3>
-                    <p class="text-muted-dark font-light text-base md:text-lg mb-8 leading-relaxed max-w-lg">
+                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-2 md:mb-3 tracking-tight">FlowPlan</h3>
+                    <p class="text-muted-dark font-light text-base md:text-lg mb-4 md:mb-5 leading-relaxed max-w-lg">
                         시험 범위 역산 스케줄링 및 진도 변경 시 실시간 자동 재분배 알고리즘을 갖춘 클린 아키텍처 기반 오프라인 퍼스트 안드로이드 플래너.
                     </p>
                     <div class="flex flex-wrap gap-2">
