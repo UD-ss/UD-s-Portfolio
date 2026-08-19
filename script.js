@@ -311,13 +311,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    const indexMarkers = document.querySelectorAll('.hero-index, .section-index');
     const progressFill = document.getElementById('progress-fill');
     const progressDot = document.getElementById('progress-dot');
-    function setActiveIndex(step) {
-        indexMarkers.forEach((el) => {
-            el.classList.toggle('is-active', parseInt(el.dataset.step, 10) === step);
-        });
+    function updateProgress(step) {
         const total = snapTargets.length - 1;
         if (total > 0) {
             const pct = (step / total) * 100;
@@ -400,7 +396,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (stepIndex >= targets.length) stepIndex = targets.length - 1;
 
         currentStep = stepIndex;
-        setActiveIndex(stepIndex);
+        updateProgress(stepIndex);
         isLocked = true;
         clearTimeout(lockTimer);
 
@@ -496,7 +492,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
             currentStep = closest;
-            setActiveIndex(closest);
+            updateProgress(closest);
         }
     });
 
@@ -507,6 +503,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ScrollTrigger.refresh();
     computeSnapTargets();
-    setActiveIndex(0);
+    updateProgress(0);
 
 });
