@@ -1,40 +1,11 @@
-@font-face {
-    font-family: 'SeoulNotice';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2505-1@1.0/SeoulAlrimTTF-Heavy.woff2') format('woff2');
-    font-weight: 900;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'SeoulNotice';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2505-1@1.0/SeoulAlrimTTF-ExtraBold.woff2') format('woff2');
-    font-weight: 800;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'SeoulNotice';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2505-1@1.0/SeoulAlrimTTF-Bold.woff2') format('woff2');
-    font-weight: 700;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'SeoulNotice';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2505-1@1.0/SeoulAlrimTTF-Medium.woff2') format('woff2');
-    font-weight: 500;
-    font-display: swap;
-}
-
-
-html {
-    font-size: clamp(14px, 0.6vw + 12px, 22px);
-}
 #hero-name {
-    font-family: 'SeoulNotice', 'Pretendard', sans-serif;
+    font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
     font-weight: 900;
     font-size: clamp(72px, 14vw, 176px) !important;
-    transition: font-weight 0.55s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: font-weight 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 #hero-name:hover {
-    font-weight: 500;
+    font-weight: 300;
 }
 .hero-index {
     font-size: clamp(128px, 22vw, 320px) !important;
