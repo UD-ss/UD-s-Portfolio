@@ -9,6 +9,31 @@
 #hero-name {
     font-family: 'SeoulNotice', 'Pretendard', sans-serif;
     font-weight: 900;
+    font-size: clamp(4.5rem, 14vw, 11rem) !important;
+}
+.hero-index {
+    font-size: clamp(8rem, 22vw, 20rem) !important;
+}
+.section-index {
+    font-size: clamp(5rem, 14vw, 14rem) !important;
+}
+#about-content blockquote {
+    font-size: clamp(1.5rem, 4.5vw, 3.5rem) !important;
+}
+.panel h3 {
+    font-size: clamp(1.75rem, 5vw, 3.75rem) !important;
+}
+.panel > span {
+    font-size: clamp(5rem, 12vw, 12rem) !important;
+}
+.project-list-item h3 {
+    font-size: clamp(1.25rem, 3.5vw, 2.25rem) !important;
+}
+a[href^="mailto:"] .magnetic-inner {
+    font-size: clamp(1.75rem, 5vw, 3.75rem) !important;
+}
+.preloader-text {
+    font-size: clamp(2.5rem, 8vw, 6rem) !important;
 }
 
 
