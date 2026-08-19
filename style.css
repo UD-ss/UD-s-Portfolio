@@ -20,12 +20,49 @@ h2[class*="tracking-[0.3em]"] {
 .hero-index,
 .section-index {
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease, -webkit-text-stroke 0.5s ease;
     z-index: 0;
 }
 .hero-index.is-active,
 .section-index.is-active {
-    opacity: 0.12;
+    opacity: 0.45;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--fg);
+}
+#progress-rail {
+    position: fixed;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 34vh;
+    background: var(--border);
+    z-index: 40;
+    pointer-events: none;
+}
+#progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: var(--point);
+    transition: height 0.5s ease;
+}
+#progress-dot {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: var(--point);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px var(--point);
+    transition: top 0.5s ease;
+}
+@media (max-width: 767px) {
+    #progress-rail { display: none; }
 }
 #about-content blockquote {
     font-size: clamp(30px, 4.5vw, 56px) !important;

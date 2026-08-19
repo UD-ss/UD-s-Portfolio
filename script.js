@@ -312,10 +312,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const indexMarkers = document.querySelectorAll('.hero-index, .section-index');
+    const progressFill = document.getElementById('progress-fill');
+    const progressDot = document.getElementById('progress-dot');
     function setActiveIndex(step) {
         indexMarkers.forEach((el) => {
             el.classList.toggle('is-active', parseInt(el.dataset.step, 10) === step);
         });
+        const total = snapTargets.length - 1;
+        if (total > 0) {
+            const pct = (step / total) * 100;
+            if (progressFill) progressFill.style.height = pct + '%';
+            if (progressDot) progressDot.style.top = pct + '%';
+        }
     }
 
 
@@ -499,5 +507,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ScrollTrigger.refresh();
     computeSnapTargets();
+    setActiveIndex(0);
 
 });
