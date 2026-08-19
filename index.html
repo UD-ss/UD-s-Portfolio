@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UD | Portfolio</title>
-    
-    <!-- Fonts: Space Grotesk (Display) + Pretendard (Body/Korean) -->
+
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-    
-    <!-- Tailwind CSS CDN -->
+
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -40,7 +40,7 @@
 
 <body class="bg-bg-light text-fg-light antialiased font-sans overflow-x-hidden selection:bg-point selection:text-white" data-theme="light">
 
-    <!-- Preloader -->
+
     <div id="preloader" class="fixed inset-0 z-[9999] bg-bg-light flex items-center justify-center">
         <div class="text-center">
             <span class="preloader-text text-6xl md:text-8xl font-display font-bold block">UD</span>
@@ -50,16 +50,16 @@
         </div>
     </div>
 
-    <!-- Custom Cursor -->
+
     <div id="cursor" class="fixed top-0 left-0 pointer-events-none z-[9998] mix-blend-difference">
         <div id="cursor-dot" class="w-2 h-2 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
         <div id="cursor-ring" class="w-10 h-10 border border-white rounded-full -translate-x-1/2 -translate-y-1/2 absolute top-0 left-0"></div>
     </div>
 
-    <!-- Noise Overlay -->
+
     <div class="noise-overlay"></div>
 
-    <!-- Navigation -->
+
     <nav id="nav" class="fixed top-0 left-0 w-full z-[100] py-5 px-6 md:px-12 flex items-center justify-between transition-all duration-500 opacity-0">
         <a href="#" class="font-display font-bold text-lg cursor-hover-target">UD.</a>
         <div class="flex items-center gap-6">
@@ -68,15 +68,15 @@
             <a href="#projects" class="nav-link text-xs uppercase tracking-widest cursor-hover-target hidden md:block">Projects</a>
             <a href="#contact" class="nav-link text-xs uppercase tracking-widest cursor-hover-target hidden md:block">Contact</a>
             <button id="theme-toggle" class="w-8 h-8 rounded-full glass-pill flex items-center justify-center cursor-hover-target" aria-label="Toggle theme">
-                <!-- Moon icon (shown in Light mode) -->
+
                 <svg class="w-4 h-4 theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
-                <!-- Sun icon (shown in Dark mode) -->
+
                 <svg class="w-4 h-4 theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
             </button>
         </div>
     </nav>
 
-    <!-- Floating Section Dot Indicator (Desktop) -->
+
     <div id="section-nav" class="fixed right-6 top-1/2 -translate-y-1/2 z-[90] hidden md:flex flex-col items-end gap-3 glass-pill py-4 px-2.5 rounded-full opacity-0 transition-opacity duration-500">
         <button class="section-dot cursor-hover-target active" data-step="0" aria-label="Hero">
             <span class="dot-label-wrap"><span class="dot-label">Hero</span></span>
@@ -112,7 +112,7 @@
         </button>
     </div>
 
-    <!-- ========== HERO ========== -->
+
     <section id="hero" class="relative w-full h-screen flex flex-col justify-center items-center px-6 overflow-hidden">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
@@ -134,10 +134,10 @@
         </div>
     </section>
 
-    <!-- ========== ABOUT ========== -->
+
     <section id="about" class="relative w-full min-h-screen flex flex-col justify-center px-6 md:px-16 overflow-hidden">
         <span class="section-index text-[8rem] md:text-[14rem] font-display font-bold absolute -top-4 right-6 md:right-20 opacity-[0.03] select-none pointer-events-none leading-none">02</span>
-        
+
         <div class="max-w-5xl mx-auto w-full relative z-10">
             <div class="flex items-center gap-4 mb-16">
                 <div class="w-8 h-[1px] bg-current opacity-30"></div>
@@ -157,7 +157,7 @@
         </div>
     </section>
 
-    <!-- ========== SKILLS ========== -->
+
     <section id="skills" class="relative w-full min-h-screen flex flex-col justify-center py-20 px-6 md:px-16 overflow-hidden">
         <span class="section-index text-[8rem] md:text-[14rem] font-display font-bold absolute -top-4 left-6 md:left-20 opacity-[0.03] select-none pointer-events-none leading-none">03</span>
 
@@ -166,10 +166,10 @@
                 <div class="w-8 h-[1px] bg-current opacity-30"></div>
                 <h2 class="text-xs uppercase tracking-[0.3em] text-muted-light">Technologies Explored</h2>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                <!-- Skill Card 1: Frontend & Mobile -->
+
+
                 <div class="skill-card group cursor-hover-target" data-color="#3178c6">
                     <div class="skill-card-inner p-8 rounded-2xl border border-border-light transition-all duration-500 relative overflow-hidden">
                         <div class="skill-card-glow"></div>
@@ -202,7 +202,7 @@
                     </div>
                 </div>
 
-                <!-- Skill Card 2: Backend & Architecture -->
+
                 <div class="skill-card group cursor-hover-target" data-color="#68a063">
                     <div class="skill-card-inner p-8 rounded-2xl border border-border-light transition-all duration-500 relative overflow-hidden">
                         <div class="skill-card-glow"></div>
@@ -235,7 +235,7 @@
                     </div>
                 </div>
 
-                <!-- Skill Card 3: AI / Vision -->
+
                 <div class="skill-card group cursor-hover-target" data-color="#ff6b35">
                     <div class="skill-card-inner p-8 rounded-2xl border border-border-light transition-all duration-500 relative overflow-hidden">
                         <div class="skill-card-glow"></div>
@@ -268,7 +268,7 @@
                     </div>
                 </div>
 
-                <!-- Skill Card 4: DB & DevOps -->
+
                 <div class="skill-card group cursor-hover-target" data-color="#336791">
                     <div class="skill-card-inner p-8 rounded-2xl border border-border-light transition-all duration-500 relative overflow-hidden">
                         <div class="skill-card-glow"></div>
@@ -304,7 +304,7 @@
         </div>
     </section>
 
-    <!-- ========== PROJECTS (Highlighted - Horizontal Scroll) ========== -->
+
     <section id="projects" class="w-full bg-fg-light text-bg-light overflow-hidden relative">
         <span class="section-index text-[8rem] md:text-[14rem] font-display font-bold absolute -top-4 right-6 md:right-20 opacity-[0.06] select-none pointer-events-none leading-none">04</span>
 
@@ -314,11 +314,11 @@
                 <h2 class="text-xs uppercase tracking-[0.3em] text-muted-dark">Highlighted Projects</h2>
             </div>
         </div>
-        
+
         <div class="horizontal-pin-wrap w-full h-screen flex items-center">
             <div class="horizontal-scroll flex px-6 md:px-20 gap-16 md:gap-24">
-                
-                <!-- Project 1: Manga-Translate -->
+
+
                 <div class="panel w-[85vw] md:w-[55vw] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
                     <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">01</span>
                     <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-10 relative group">
@@ -339,7 +339,7 @@
                     </div>
                 </div>
 
-                <!-- Project 2: UD's Space -->
+
                 <div class="panel w-[85vw] md:w-[55vw] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
                     <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">02</span>
                     <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-10 relative group">
@@ -359,7 +359,7 @@
                     </div>
                 </div>
 
-                <!-- Project 3: FlowPlan -->
+
                 <div class="panel w-[85vw] md:w-[55vw] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
                     <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">03</span>
                     <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-10 relative group">
@@ -382,7 +382,7 @@
         </div>
     </section>
 
-    <!-- ========== MORE PROJECTS ========== -->
+
     <section id="more-projects" class="w-full min-h-screen flex flex-col justify-center py-20 px-6 md:px-16 relative overflow-hidden">
         <span class="section-index text-[8rem] md:text-[14rem] font-display font-bold absolute -top-4 left-6 md:left-20 opacity-[0.03] select-none pointer-events-none leading-none">05</span>
 
@@ -391,7 +391,7 @@
                 <div class="w-8 h-[1px] bg-current opacity-30"></div>
                 <h2 class="text-xs uppercase tracking-[0.3em] text-muted-light font-medium">05 / More Projects</h2>
             </div>
-            
+
             <div class="project-list">
                 <a href="#" class="project-list-item group cursor-hover-target block py-10 border-t border-border-light relative overflow-hidden transition-colors duration-500">
                     <div class="project-list-bg"></div>
@@ -452,7 +452,7 @@
         </div>
     </section>
 
-    <!-- ========== CONTACT ========== -->
+
     <section id="contact" class="w-full min-h-screen flex flex-col justify-center items-center px-6 relative overflow-hidden">
         <span class="section-index text-[8rem] md:text-[14rem] font-display font-bold absolute -top-4 right-6 md:right-20 opacity-[0.03] select-none pointer-events-none leading-none">06</span>
 
@@ -490,7 +490,7 @@
         </div>
     </section>
 
-    <!-- Scripts -->
+
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>

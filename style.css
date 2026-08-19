@@ -1,10 +1,3 @@
-/* ============================================
-   2026 Portfolio — style.css
-   Editorial & Human-crafted, Modern Aesthetics
-   Complete Dynamic Light & Dark Theme System
-   ============================================ */
-
-/* --- SeoulNotice (한국어 디스플레이) Webfont --- */
 @font-face {
     font-family: 'SeoulNotice';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2505-1@1.0/SeoulAlrimTTF-Heavy.woff2') format('woff2');
@@ -12,25 +5,25 @@
     font-display: swap;
 }
 
-/* --- Hero Name (Korean Rotating Display) --- */
+
 #hero-name {
     font-family: 'SeoulNotice', 'Pretendard', sans-serif;
     font-weight: 900;
 }
 
-/* --- Theme Color Variables --- */
+
 :root,
 [data-theme="light"] {
-    --bg: #ece7dd;                /* Warm beige */
-    --fg: #211d18;                /* Warm deep charcoal */
-    --muted: #8a8378;             /* Soft warm gray */
-    --card-bg: rgba(255, 253, 249, 0.85); /* Frosted warm card */
-    --card-border: #ddd6ca;       /* Subtle beige border */
-    --border: #d8d1c4;            /* Section divider line */
-    --point: #0055ff;             /* Electric Cobalt Blue */
-    --highlight-bg: #211d18;      /* Highlight section contrast */
-    --highlight-fg: #ece7dd;      /* Highlight text */
-    --highlight-card: #2c2720;    /* Highlight panel card */
+    --bg: #ece7dd;
+    --fg: #211d18;
+    --muted: #8a8378;
+    --card-bg: rgba(255, 253, 249, 0.85);
+    --card-border: #ddd6ca;
+    --border: #d8d1c4;
+    --point: #0055ff;
+    --highlight-bg: #211d18;
+    --highlight-fg: #ece7dd;
+    --highlight-card: #2c2720;
     --list-hover-bg: rgba(0, 85, 255, 0.04);
     --preloader-bg: #ece7dd;
     --preloader-fg: #211d18;
@@ -44,16 +37,16 @@
 }
 
 [data-theme="dark"] {
-    --bg: #1c1e20;                /* Soft dark gray */
-    --fg: #e6e3de;                /* Warm off-white */
-    --muted: #9b968e;             /* Muted warm gray */
-    --card-bg: rgba(36, 38, 41, 0.75); /* Translucent dark gray glass */
-    --card-border: #2b2d30;       /* Subtle dark gray border */
-    --border: #27292b;            /* Dark divider line */
-    --point: #3b82f6;             /* Neon Blue */
-    --highlight-bg: #151719;      /* Deep dark gray */
-    --highlight-fg: #e6e3de;      /* Crisp text */
-    --highlight-card: #26282b;    /* Dark gray panel card */
+    --bg: #1c1e20;
+    --fg: #e6e3de;
+    --muted: #9b968e;
+    --card-bg: rgba(36, 38, 41, 0.75);
+    --card-border: #2b2d30;
+    --border: #27292b;
+    --point: #3b82f6;
+    --highlight-bg: #151719;
+    --highlight-fg: #e6e3de;
+    --highlight-card: #26282b;
     --list-hover-bg: rgba(59, 130, 246, 0.08);
     --preloader-bg: #1c1e20;
     --preloader-fg: #e6e3de;
@@ -66,7 +59,7 @@
     --logo-opacity-base: 0.4;
 }
 
-/* --- Base Body & Theme Transition --- */
+
 body {
     background-color: var(--bg) !important;
     color: var(--fg) !important;
@@ -78,21 +71,21 @@ body {
                 color 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Tailwind utility overriders using CSS variables */
+
 .bg-bg-light { background-color: var(--bg) !important; }
 .text-fg-light { color: var(--fg) !important; }
 .text-muted-light { color: var(--muted) !important; }
 .border-border-light { border-color: var(--border) !important; }
 .text-point { color: var(--point) !important; }
 
-/* --- Lenis Smooth Scroll --- */
+
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .lenis.lenis-stopped { overflow: hidden; }
 .lenis.lenis-scrolling iframe { pointer-events: none; }
 
-/* --- Noise Overlay --- */
+
 .noise-overlay {
     position: fixed;
     inset: 0;
@@ -105,7 +98,7 @@ html.lenis, html.lenis body { height: auto; }
 }
 [data-theme="dark"] .noise-overlay { opacity: 0.05; }
 
-/* --- Preloader --- */
+
 #preloader {
     background-color: var(--preloader-bg);
     color: var(--preloader-fg);
@@ -131,7 +124,7 @@ html.lenis, html.lenis body { height: auto; }
     to { transform: scaleX(1); }
 }
 
-/* --- Custom Cursor --- */
+
 #cursor {
     transition: none;
     mix-blend-mode: var(--cursor-blend);
@@ -169,7 +162,7 @@ html.lenis, html.lenis body { height: auto; }
     a, button, [class*="cursor-hover"] { cursor: none !important; }
 }
 
-/* --- Floating Gradient Orbs --- */
+
 .orb {
     position: absolute;
     border-radius: 50%;
@@ -207,7 +200,7 @@ html.lenis, html.lenis body { height: auto; }
     66% { transform: translate(-20px, 20px) scale(0.9); }
 }
 
-/* --- Scroll Line Indicator --- */
+
 .scroll-line {
     animation: scroll-line 2.5s cubic-bezier(0.77, 0, 0.175, 1) infinite;
 }
@@ -217,7 +210,7 @@ html.lenis, html.lenis body { height: auto; }
     100% { transform: translateY(100%); }
 }
 
-/* --- Glass Pill (Theme toggle & buttons) --- */
+
 .glass-pill {
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
@@ -231,7 +224,7 @@ html.lenis, html.lenis body { height: auto; }
     border-color: var(--point);
 }
 
-/* --- Section Dot Indicator (Dynamic Island style) --- */
+
 .section-dot {
     position: relative;
     display: flex;
@@ -305,7 +298,7 @@ html.lenis, html.lenis body { height: auto; }
 [data-theme="dark"] .theme-icon-sun { display: block !important; }
 [data-theme="dark"] .theme-icon-moon { display: none !important; }
 
-/* --- Nav Links --- */
+
 .nav-link {
     position: relative;
     color: var(--muted);
@@ -328,7 +321,7 @@ html.lenis, html.lenis body { height: auto; }
     width: 100%;
 }
 
-/* --- About Section Editorial Highlight --- */
+
 .highlight-phrase {
     position: relative;
     display: inline-block;
@@ -360,7 +353,7 @@ html.lenis, html.lenis body { height: auto; }
     100% { background-position: 0% 50%; }
 }
 
-/* Subtle glowing accent underline */
+
 .highlight-line {
     position: absolute;
     bottom: -2px;
@@ -382,7 +375,7 @@ html.lenis, html.lenis body { height: auto; }
     transform: scaleX(1);
 }
 
-/* --- Skill Cards & Interactive Glow --- */
+
 .skill-card-inner {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
@@ -408,7 +401,7 @@ html.lenis, html.lenis body { height: auto; }
     opacity: 1;
 }
 
-/* --- Skill Logo --- */
+
 .skill-logo {
     filter: var(--logo-filter-base);
     opacity: var(--logo-opacity-base);
@@ -420,7 +413,7 @@ html.lenis, html.lenis body { height: auto; }
     opacity: 1;
 }
 
-/* --- Highlighted Projects (Horizontal Section) --- */
+
 #projects {
     background-color: var(--highlight-bg) !important;
     color: var(--highlight-fg) !important;
@@ -434,7 +427,7 @@ html.lenis, html.lenis body { height: auto; }
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* --- Project Tags --- */
+
 .tag {
     padding: 6px 14px;
     border: 1px solid rgba(128, 128, 128, 0.25);
@@ -449,7 +442,7 @@ html.lenis, html.lenis body { height: auto; }
     color: var(--point);
 }
 
-/* --- Project hover label --- */
+
 .project-hover-label {
     position: absolute;
     bottom: 20px;
@@ -473,7 +466,7 @@ html.lenis, html.lenis body { height: auto; }
     transform: translateY(0);
 }
 
-/* --- More Projects List Item --- */
+
 .project-list-item {
     border-color: var(--border) !important;
     transition: border-color 0.4s ease;
@@ -490,11 +483,11 @@ html.lenis, html.lenis body { height: auto; }
     transform: scaleX(1);
 }
 
-/* --- Horizontal Scroll --- */
+
 .horizontal-pin-wrap { width: 100vw; height: 100vh; }
 .horizontal-scroll { width: max-content; height: 100%; align-items: center; }
 
-/* --- Magnetic Button --- */
+
 .magnetic-wrap { display: inline-block; }
 .magnetic-inner {
     display: flex;
@@ -503,10 +496,10 @@ html.lenis, html.lenis body { height: auto; }
     pointer-events: none;
 }
 
-/* --- SplitType word/line containers --- */
+
 .word, .line { display: inline-block; }
 
-/* --- Selection Color --- */
+
 ::selection {
     background: var(--point);
     color: #ffffff;

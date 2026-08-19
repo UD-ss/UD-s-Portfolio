@@ -1,18 +1,9 @@
-/* ============================================
-   2026 Portfolio — script.js
-   GSAP + Lenis + SplitType + One-Page Section Controller
-   ============================================ */
-
 document.addEventListener("DOMContentLoaded", () => {
 
-    // ========================
-    // 0. Initialize Lucide Icons
-    // ========================
+
     lucide.createIcons();
 
-    // ========================
-    // 1. Lenis Smooth Scroll
-    // ========================
+
     const lenis = new Lenis({
         duration: 1.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -30,18 +21,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     requestAnimationFrame(raf);
 
-    // ========================
-    // 2. GSAP Setup & Lenis Sync
-    // ========================
+
     gsap.registerPlugin(ScrollTrigger);
 
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
 
-    // ========================
-    // 3. Preloader
-    // ========================
+
     const preloader = document.getElementById('preloader');
     function finishPreloader() {
         if (!preloader.classList.contains('loaded')) {
@@ -56,9 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener('load', () => setTimeout(finishPreloader, 2000));
     if (document.readyState === 'complete') setTimeout(finishPreloader, 2000);
 
-    // ========================
-    // 4. Custom Cursor (Desktop)
-    // ========================
+
     const cursor = document.getElementById('cursor');
     const cursorDot = document.getElementById('cursor-dot');
     const cursorRing = document.getElementById('cursor-ring');
@@ -93,9 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ========================
-    // 5. Theme Toggle (Light / Dark)
-    // ========================
+
     const themeToggle = document.getElementById('theme-toggle');
     const savedTheme = localStorage.getItem('ud-theme') || 'light';
     document.body.setAttribute('data-theme', savedTheme);
@@ -114,9 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ========================
-    // 6. Hero Animations
-    // ========================
+
     function initHeroAnimations() {
         const names = ["UD", "ユーディー", "유디"];
         let nameIndex = 0;
@@ -157,9 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // ========================
-    // 7. About Section — Scroll-triggered Reveal & Highlight Line
-    // ========================
+
     const aboutContent = document.getElementById('about-content');
     const highlightLine = document.querySelector('.highlight-line');
 
@@ -183,9 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ========================
-    // 8. Skills Cards — Glow follows mouse position
-    // ========================
+
     const skillCards = document.querySelectorAll('.skill-card');
     skillCards.forEach((card) => {
         const inner = card.querySelector('.skill-card-inner');
@@ -221,9 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ========================
-    // 9. Horizontal Scroll — Highlighted Projects
-    // ========================
+
     const horizontalSection = document.querySelector('#projects');
     const scrollContainer = document.querySelector('.horizontal-scroll');
 
@@ -262,9 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ========================
-    // 10. More Projects — Scroll reveal stagger
-    // ========================
+
     const projectItems = document.querySelectorAll('.project-list-item');
     projectItems.forEach((item, i) => {
         gsap.from(item, {
@@ -281,9 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ========================
-    // 11. Magnetic Buttons (Contact section)
-    // ========================
+
     const magneticItems = document.querySelectorAll('.magnetic-wrap');
     magneticItems.forEach((wrap) => {
         const inner = wrap.querySelector('.magnetic-inner');
@@ -312,9 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ========================
-    // 12. Section index parallax (layered depth)
-    // ========================
+
     const sectionIndices = document.querySelectorAll('.section-index, .hero-index');
     sectionIndices.forEach((el) => {
         gsap.to(el, {
@@ -329,9 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ========================
-    // 13. Nav background on scroll
-    // ========================
+
     const nav = document.getElementById('nav');
     if (nav) {
         ScrollTrigger.create({
@@ -351,26 +318,24 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ============================================
-    // 14. ONE-PAGE SECTION LOCKING CONTROLLER
-    // ============================================
+
     let snapTargets = [];
 
     function computeSnapTargets() {
         const targets = [];
-        
-        // 0: Hero
+
+
         targets.push(0);
 
-        // 1: About
+
         const about = document.getElementById('about');
         if (about) targets.push(about.offsetTop);
 
-        // 2: Skills
+
         const skills = document.getElementById('skills');
         if (skills) targets.push(skills.offsetTop);
 
-        // 3, 4, 5: Highlighted Projects (Horizontal Steps)
+
         const ht = ScrollTrigger.getById('horizontal-pin');
         if (ht) {
             targets.push(ht.start);
@@ -381,11 +346,11 @@ document.addEventListener("DOMContentLoaded", () => {
             if (projects) targets.push(projects.offsetTop);
         }
 
-        // 6: More Projects
+
         const more = document.getElementById('more-projects');
         if (more) targets.push(more.offsetTop);
 
-        // 7: Contact
+
         const contact = document.getElementById('contact');
         if (contact) targets.push(contact.offsetTop);
 
@@ -433,11 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 1. Wheel Navigation (1 Wheel Flick = Exactly 1 Section Move)
-    // Runs in the CAPTURE phase so it executes BEFORE Lenis's own wheel
-    // listener. We preventDefault (blocks native scroll) and tag the event
-    // with `lenisStopPropagation` so Lenis skips it — otherwise Lenis also
-    // smooth-scrolls the same wheel input and the section lock never holds.
+
     window.addEventListener('wheel', (e) => {
         e.preventDefault();
         e.lenisStopPropagation = true;
@@ -453,7 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }, { passive: false, capture: true });
 
-    // 2. Keyboard Navigation
+
     window.addEventListener('keydown', (e) => {
         if (isLocked) return;
         if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
@@ -465,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 3. Touch Swipe Navigation
+
     let touchY = 0;
     window.addEventListener('touchstart', (e) => {
         touchY = e.touches[0].clientY;
@@ -483,7 +444,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }, { passive: true });
 
-    // 4. Dot Click Navigation
+
     document.querySelectorAll('.section-dot').forEach((dot) => {
         dot.addEventListener('click', () => {
             const step = parseInt(dot.getAttribute('data-step'), 10);
@@ -491,7 +452,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 5. Header Nav Click Synchronization
+
     const navStepMap = {
         '#hero': 0,
         '#about': 1,
@@ -513,7 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 6. Sync current step dot on scroll (if scrolled or animated)
+
     lenis.on('scroll', ({ scroll }) => {
         if (!isLocked) {
             const targets = getSnapTargets();
@@ -531,12 +492,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Recalculate snap positions whenever the layout changes (pin spacers,
-    // fonts, resize, etc.)
+
     ScrollTrigger.addEventListener('refresh', () => { snapTargets = []; });
     window.addEventListener('resize', () => { snapTargets = []; });
 
-    // Force a refresh first so pin-spacers exist before measuring offsets
+
     ScrollTrigger.refresh();
     computeSnapTargets();
 
