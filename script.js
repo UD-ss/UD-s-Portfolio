@@ -82,12 +82,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem('ud-theme') || (prefersDark ? 'dark' : 'light');
     document.body.setAttribute('data-theme', savedTheme);
 
+
+    const API_LOG = "/api/log";
+
+    function sendLog(type, data) {
+        try {
+            const payload = JSON.stringify({ type: type, data: data, page: location.pathname, ts: Date.now() });
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(API_LOG, new Blob([payload], { type: 'application/json' }));
+            } else {
+                fetch(API_LOG, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
+            }
+        } catch (e) {}
+    }
+
+    if (!sessionStorage.getItem('ud-logged')) {
+        sessionStorage.setItem('ud-logged', '1');
+        sendLog('visit', {
+            theme: document.body.getAttribute('data-theme'),
+            referrer: document.referrer,
+            screen: window.screen.width + 'x' + window.screen.height
+        });
+    }
+
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             const current = document.body.getAttribute('data-theme') || 'light';
             const next = current === 'dark' ? 'light' : 'dark';
             document.body.setAttribute('data-theme', next);
             localStorage.setItem('ud-theme', next);
+            sendLog('theme', { from: current, to: next });
 
             const nav = document.getElementById('nav');
             if (nav && window.scrollY > 80) {
