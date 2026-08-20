@@ -200,6 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const projectsSection = document.getElementById('projects');
     const horizonTrack = document.querySelector('.horizontal-scroll');
+    let projectStepHandler = null;
 
     if (projectsSection && horizonTrack) {
         const panelStepX = () => {
@@ -262,6 +263,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         horizonTrack.addEventListener('pointerup', endDrag);
         horizonTrack.addEventListener('pointercancel', endDrag);
+
+        const stepProject = (dir) => {
+            if (playing) return;
+            const steps = panelStepX();
+            if (steps.length < 2) return;
+            const baseX = gsap.getProperty(horizonTrack, 'x');
+            let idx = 0;
+            let minD = Infinity;
+            steps.forEach((s, i) => {
+                const d = Math.abs(baseX - s);
+                if (d < minD) { minD = d; idx = i; }
+            });
+            const next = Math.min(steps.length - 1, Math.max(0, idx + dir));
+            if (next === idx) return;
+            gsap.to(horizonTrack, { x: steps[next], duration: 0.7, ease: "power3.out" });
+        };
+        projectStepHandler = stepProject;
     }
 
 
@@ -416,6 +434,11 @@ document.addEventListener("DOMContentLoaded", () => {
         e.lenisStopPropagation = true;
 
         if (isLocked) return;
+
+        if (projectStepHandler && e.target.closest && e.target.closest('.horizontal-pin-wrap') && Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 20) {
+            projectStepHandler(e.deltaX > 0 ? 1 : -1);
+            return;
+        }
 
         if (Math.abs(e.deltaY) > 20) {
             if (e.deltaY > 0) {
