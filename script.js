@@ -559,21 +559,25 @@ document.addEventListener("DOMContentLoaded", () => {
             items.forEach(item => {
                 const img = item.querySelector('img');
                 const svg = item.querySelector('svg');
-                const text = item.textContent.trim();
+                let label = item.textContent.trim()
+                    .replace(/\s*\([^)]*\)/g, '')
+                    .replace(/\s+\d+([.,]\d+)*\+?$/g, '')
+                    .replace(/\s+MV\d+$/g, '')
+                    .trim();
                 let icon;
                 if (img) {
                     icon = `<img src="${img.src}" alt="${img.alt}">`;
                 } else if (svg) {
-                    icon = `<span class="w-11 h-11 flex items-center justify-center text-point">${svg.outerHTML}</span>`;
+                    icon = `<span class="popup-svg-icon flex items-center justify-center">${svg.outerHTML}</span>`;
                 } else {
-                    icon = `<span class="w-8 h-8 flex items-center justify-center text-point">?</span>`;
+                    icon = `<span class="popup-svg-icon flex items-center justify-center">?</span>`;
                 }
-                gridHTML += `<div class="popup-item">${icon}<span>${text}</span></div>`;
+                gridHTML += `<div class="popup-item">${icon}<span>${label}</span></div>`;
             });
             gridHTML += '</div>';
 
             popupContent.innerHTML = `
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center justify-between mb-6 pr-10">
                     <h3 class="text-sm font-display font-semibold uppercase tracking-wider">${card.querySelector('h3').textContent}</h3>
                     <span class="text-xs text-muted-light font-light">${card.querySelector('.text-xs').textContent}</span>
                 </div>
