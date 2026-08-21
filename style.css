@@ -614,6 +614,7 @@ html.lenis, html.lenis body { height: auto; }
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s ease;
+    overflow: visible;
 }
 
 .skill-card-popup.is-active {
