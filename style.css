@@ -610,11 +610,22 @@ html.lenis, html.lenis body { height: auto; }
 
 .skill-card-popup {
     position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     z-index: 210;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.3s ease;
-    overflow: visible;
+    overflow-y: auto;
+    max-height: 80vh;
+    width: 80vw;
+    max-width: 700px;
+    border-radius: 1rem;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 2rem;
 }
 
 .skill-card-popup.is-active {
