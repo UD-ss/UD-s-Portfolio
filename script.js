@@ -553,14 +553,23 @@ document.addEventListener("DOMContentLoaded", () => {
             const overlay = document.getElementById('skillOverlay');
             const popup = document.getElementById('skillPopup');
             const popupContent = document.getElementById('skillPopupContent');
-            const list = card.querySelector('.skill-card-list ul');
+            const items = card.querySelectorAll('.skill-item');
+
+            let gridHTML = '<div class="popup-grid">';
+            items.forEach(item => {
+                const img = item.querySelector('img');
+                const text = item.textContent.trim();
+                const icon = img ? `<img src="${img.src}" alt="${img.alt}">` : `<span class="w-5 h-5 flex items-center justify-center">${item.querySelector('i') ? item.querySelector('i').outerHTML : ''}</span>`;
+                gridHTML += `<div class="popup-item">${icon}<span>${text}</span></div>`;
+            });
+            gridHTML += '</div>';
 
             popupContent.innerHTML = `
-                <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center justify-between mb-6">
                     <h3 class="text-sm font-display font-semibold uppercase tracking-wider">${card.querySelector('h3').textContent}</h3>
                     <span class="text-xs text-muted-light font-light">${card.querySelector('.text-xs').textContent}</span>
                 </div>
-                ${list ? list.outerHTML : ''}
+                ${gridHTML}
             `;
 
             gsap.set(popup, { opacity: 0, visibility: 'visible' });
