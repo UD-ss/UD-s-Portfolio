@@ -653,9 +653,14 @@ html.lenis, html.lenis body { height: auto; }
     opacity: 1 !important;
 }
 
-body:not([data-theme="dark"]) .popup-item img[src*="openjdk"],
-body:not([data-theme="dark"]) .popup-item img[src*="ollama"] {
-    filter: invert(1) brightness(0.35) !important;
+body:not([data-theme="dark"]) img[src*="openjdk"],
+body:not([data-theme="dark"]) img[src*="ollama"] {
+    filter: invert(1) brightness(0.4) !important;
+}
+
+.skill-item {
+    font-size: 0.925rem;
+    letter-spacing: 0.01em;
 }
 
 .popup-svg-icon {
