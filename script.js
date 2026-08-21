@@ -589,6 +589,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const cardRect = card.getBoundingClientRect();
             skillPopupSourceRect = { x: cardRect.left, y: cardRect.top, width: cardRect.width, height: cardRect.height };
 
+            const srcOffsets = [];
+            items.forEach(it => {
+                const r = it.getBoundingClientRect();
+                srcOffsets.push({ x: r.left - cardRect.left, y: r.top - cardRect.top });
+            });
+
             const finalW = Math.min(window.innerWidth * 0.85, 720);
 
             gsap.set(popup, {
@@ -629,17 +635,19 @@ document.addEventListener("DOMContentLoaded", () => {
             const popupHeader = popupContent.querySelector('div');
             const gridItems = popupContent.querySelectorAll('.popup-item');
             if (popupHeader) {
-                gsap.fromTo(popupHeader, { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.45, delay: 0.18, ease: 'power2.out' });
+                gsap.fromTo(popupHeader, { opacity: 0 }, { opacity: 1, duration: 0.4, delay: 0.3, ease: 'power2.out' });
             }
-            gsap.set(gridItems, { opacity: 0, y: 28, scale: 0.88 });
+            gridItems.forEach((el, i) => {
+                const off = srcOffsets[i] || { x: 0, y: 24 };
+                gsap.set(el, { x: off.x, y: off.y, opacity: 0 });
+            });
             gsap.to(gridItems, {
-                opacity: 1,
+                x: 0,
                 y: 0,
-                scale: 1,
-                duration: 0.55,
-                delay: 0.22,
-                ease: 'power3.out',
-                stagger: { each: 0.05, from: 'start' }
+                opacity: 1,
+                duration: 0.65,
+                ease: 'power3.inOut',
+                stagger: 0.04
             });
         });
     });
