@@ -590,21 +590,75 @@ html.lenis, html.lenis body { height: auto; }
     opacity: 0.5;
 }
 
-.skill-card.is-open .skill-card-header::after {
-    transform: rotate(-135deg);
+.skill-card-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    z-index: 200;
+    pointer-events: none;
+    transition: background 0.5s ease, backdrop-filter 0.5s ease;
 }
 
-.skill-card-list {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+.skill-card-overlay.is-active {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    pointer-events: auto;
+}
+
+.skill-card-popup {
+    position: fixed;
+    z-index: 210;
+    pointer-events: none;
     opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.skill-card.is-open .skill-card-list {
-    max-height: 500px;
+.skill-card-popup.is-active {
+    pointer-events: auto;
     opacity: 1;
 }
+
+.skill-card-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10;
+}
+
+.skill-card-popup.is-active .skill-card-close {
+    opacity: 1;
+}
+
+.skill-card-close:hover {
+    transform: scale(1.1);
+}
+
+.skill-card-close::before,
+.skill-card-close::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 1px;
+}
+
+.skill-card-close::before { transform: rotate(45deg); }
+.skill-card-close::after { transform: rotate(-45deg); }
 
 
 #projects {
