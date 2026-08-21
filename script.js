@@ -547,6 +547,12 @@ document.addEventListener("DOMContentLoaded", () => {
     ScrollTrigger.addEventListener('refresh', () => { snapTargets = []; });
     window.addEventListener('resize', () => { snapTargets = []; });
 
+    document.querySelectorAll('.skill-card-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const card = header.closest('.skill-card');
+            card.classList.toggle('is-open');
+        });
+    });
 
     ScrollTrigger.refresh();
     computeSnapTargets();
