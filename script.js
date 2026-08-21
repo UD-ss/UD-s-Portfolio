@@ -625,7 +625,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 ease: 'power3.inOut',
                 onComplete: () => { popup.style.overflowY = 'auto'; }
             });
-            gsap.fromTo(popupContent, { opacity: 0 }, { opacity: 1, duration: 0.4, delay: 0.25, ease: 'power2.out' });
+            gsap.set(popupContent, { opacity: 1 });
+            const popupHeader = popupContent.querySelector('div');
+            const gridItems = popupContent.querySelectorAll('.popup-item');
+            if (popupHeader) {
+                gsap.fromTo(popupHeader, { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.45, delay: 0.18, ease: 'power2.out' });
+            }
+            gsap.set(gridItems, { opacity: 0, y: 28, scale: 0.88 });
+            gsap.to(gridItems, {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.55,
+                delay: 0.22,
+                ease: 'power3.out',
+                stagger: { each: 0.05, from: 'start' }
+            });
         });
     });
 
