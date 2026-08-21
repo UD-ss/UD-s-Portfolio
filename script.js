@@ -548,6 +548,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener('resize', () => { snapTargets = []; });
 
     let skillPopupSourceRect = null;
+    let skillPopupItemSrc = [];
 
     document.querySelectorAll('.skill-card').forEach(card => {
         card.addEventListener('click', (e) => {
@@ -557,8 +558,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const popupContent = document.getElementById('skillPopupContent');
             const items = card.querySelectorAll('.skill-item');
 
+            const cardRect = card.getBoundingClientRect();
+            skillPopupSourceRect = { x: cardRect.left, y: cardRect.top, width: cardRect.width, height: cardRect.height };
+
+            const srcRects = [];
+            items.forEach(it => {
+                const r = it.getBoundingClientRect();
+                srcRects.push({ x: r.left - cardRect.left, y: r.top - cardRect.top, w: r.width, h: r.height });
+            });
+            skillPopupItemSrc = srcRects;
+
             let gridHTML = '<div class="popup-grid">';
-            items.forEach(item => {
+            items.forEach((item, i) => {
                 const img = item.querySelector('img');
                 const svg = item.querySelector('svg');
                 let label = item.textContent.trim()
@@ -566,15 +577,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     .replace(/\s+\d+([.,]\d+)*\+?$/g, '')
                     .replace(/\s+MV\d+$/g, '')
                     .trim();
-                let icon;
+                let rowIcon = '';
+                let tileIcon = '';
                 if (img) {
-                    icon = `<img src="${img.src}" alt="${img.alt}">`;
+                    rowIcon = `<img src="${img.src}" alt="${img.alt}">`;
+                    tileIcon = `<img src="${img.src}" alt="${img.alt}">`;
                 } else if (svg) {
-                    icon = `<span class="popup-svg-icon flex items-center justify-center">${svg.outerHTML}</span>`;
-                } else {
-                    icon = `<span class="popup-svg-icon flex items-center justify-center">?</span>`;
+                    const cleanSvg = svg.outerHTML.replace(/class="[^"]*"/g, '');
+                    rowIcon = cleanSvg;
+                    tileIcon = `<span class="popup-svg-icon flex items-center justify-center">${cleanSvg}</span>`;
                 }
-                gridHTML += `<div class="popup-item">${icon}<span>${label}</span></div>`;
+                gridHTML += `<div class="popup-item">
+                    <div class="item-row-view">${rowIcon}<span>${label}</span></div>
+                    <div class="item-tile-view">${tileIcon}<span>${label}</span></div>
+                </div>`;
             });
             gridHTML += '</div>';
 
@@ -585,15 +601,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
                 ${gridHTML}
             `;
-
-            const cardRect = card.getBoundingClientRect();
-            skillPopupSourceRect = { x: cardRect.left, y: cardRect.top, width: cardRect.width, height: cardRect.height };
-
-            const srcOffsets = [];
-            items.forEach(it => {
-                const r = it.getBoundingClientRect();
-                srcOffsets.push({ x: r.left - cardRect.left, y: r.top - cardRect.top });
-            });
 
             const finalW = Math.min(window.innerWidth * 0.85, 720);
 
@@ -613,10 +620,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             gsap.set(popup, { width: finalW, height: 'auto' });
             const finalH = Math.min(popup.offsetHeight, window.innerHeight * 0.8);
+            const gridItems = Array.from(popupContent.querySelectorAll('.popup-item'));
+            const finalDims = gridItems.map(el => ({ w: el.offsetWidth, h: el.offsetHeight }));
+            gsap.set(popup, { width: cardRect.width, height: cardRect.height });
+
             const finalX = (window.innerWidth - finalW) / 2;
             const finalY = (window.innerHeight - finalH) / 2;
-
-            gsap.set(popup, { width: cardRect.width, height: cardRect.height });
 
             gsap.set(overlay, { opacity: 0 });
             overlay.classList.add('is-active');
@@ -631,23 +640,33 @@ document.addEventListener("DOMContentLoaded", () => {
                 ease: 'power3.inOut',
                 onComplete: () => { popup.style.overflowY = 'auto'; }
             });
+
             gsap.set(popupContent, { opacity: 1 });
             const popupHeader = popupContent.querySelector('div');
-            const gridItems = popupContent.querySelectorAll('.popup-item');
             if (popupHeader) {
                 gsap.fromTo(popupHeader, { opacity: 0 }, { opacity: 1, duration: 0.4, delay: 0.3, ease: 'power2.out' });
             }
+
             gridItems.forEach((el, i) => {
-                const off = srcOffsets[i] || { x: 0, y: 24 };
-                gsap.set(el, { x: off.x, y: off.y, opacity: 0 });
-            });
-            gsap.to(gridItems, {
-                x: 0,
-                y: 0,
-                opacity: 1,
-                duration: 0.65,
-                ease: 'power3.inOut',
-                stagger: 0.04
+                const src = srcRects[i] || { x: 0, y: 24, w: 120, h: 24 };
+                const fin = finalDims[i] || { w: 120, h: 120 };
+                const rowView = el.querySelector('.item-row-view');
+                const tileView = el.querySelector('.item-tile-view');
+                gsap.set(el, { x: src.x, y: src.y, width: src.w, height: src.h });
+                gsap.set(rowView, { opacity: 1 });
+                gsap.set(tileView, { opacity: 0 });
+                gsap.to(el, {
+                    x: 0,
+                    y: 0,
+                    width: fin.w,
+                    height: fin.h,
+                    duration: 0.65,
+                    ease: 'power3.inOut',
+                    delay: i * 0.03,
+                    onComplete: () => { gsap.set(el, { clearProps: 'transform' }); }
+                });
+                gsap.to(rowView, { opacity: 0, duration: 0.22, delay: 0.26 + i * 0.03, ease: 'power2.out' });
+                gsap.to(tileView, { opacity: 1, duration: 0.28, delay: 0.28 + i * 0.03, ease: 'power2.out' });
             });
         });
     });
@@ -677,6 +696,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     popup.classList.remove('is-active');
                     gsap.set(popup, { visibility: 'hidden' });
                 }
+            });
+            const gridItems = popup.querySelectorAll('.popup-item');
+            gridItems.forEach((el, i) => {
+                const s = skillPopupItemSrc[i] || { x: 0, y: 0, w: 120, h: 24 };
+                const rowView = el.querySelector('.item-row-view');
+                const tileView = el.querySelector('.item-tile-view');
+                gsap.to(rowView, { opacity: 1, duration: 0.18, delay: 0.12 + i * 0.02, ease: 'power2.out' });
+                gsap.to(tileView, { opacity: 0, duration: 0.18, delay: 0.12 + i * 0.02, ease: 'power2.out' });
+                gsap.to(el, {
+                    x: s.x,
+                    y: s.y,
+                    width: s.w,
+                    height: s.h,
+                    duration: 0.55,
+                    ease: 'power3.inOut'
+                });
             });
         } else {
             gsap.to(popup, {
