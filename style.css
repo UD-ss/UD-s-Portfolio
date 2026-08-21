@@ -84,8 +84,8 @@ a[href^="mailto:"] .magnetic-inner {
     --list-hover-bg: rgba(0, 85, 255, 0.04);
     --preloader-bg: #ece7dd;
     --preloader-fg: #211d18;
-    --orb-opacity-1: 0.14;
-    --orb-opacity-2: 0.09;
+    --orb-opacity-1: 0.35;
+    --orb-opacity-2: 0.18;
     --glass-bg: rgba(255, 253, 249, 0.7);
     --glass-border: rgba(0, 0, 0, 0.08);
     --cursor-blend: difference;
@@ -107,8 +107,8 @@ a[href^="mailto:"] .magnetic-inner {
     --list-hover-bg: rgba(59, 130, 246, 0.08);
     --preloader-bg: #1c1e20;
     --preloader-fg: #e6e3de;
-    --orb-opacity-1: 0.28;
-    --orb-opacity-2: 0.20;
+    --orb-opacity-1: 0.55;
+    --orb-opacity-2: 0.38;
     --glass-bg: rgba(255, 255, 255, 0.06);
     --glass-border: rgba(255, 255, 255, 0.09);
     --cursor-blend: difference;
@@ -231,13 +231,13 @@ html.lenis, html.lenis body { height: auto; }
     transition: opacity 0.5s ease;
 }
 .orb-1 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, #0055ff55, transparent 70%);
-    top: 10%;
-    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, #0077ff88, #00b4d8aa 40%, transparent 70%);
+    top: 8%;
+    right: -12%;
     opacity: var(--orb-opacity-1);
-    animation: orb-float-1 20s ease-in-out infinite;
+    animation: orb-float-1 18s ease-in-out infinite, orb-pulse 6s ease-in-out infinite;
 }
 .orb-2 {
     width: 400px;
@@ -257,6 +257,10 @@ html.lenis, html.lenis body { height: auto; }
     0%, 100% { transform: translate(0, 0) scale(1); }
     33% { transform: translate(30px, -40px) scale(1.1); }
     66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+@keyframes orb-pulse {
+    0%, 100% { opacity: var(--orb-opacity-1); }
+    50% { opacity: calc(var(--orb-opacity-1) * 1.4); }
 }
 
 
