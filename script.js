@@ -564,7 +564,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (img) {
                     icon = `<img src="${img.src}" alt="${img.alt}">`;
                 } else if (svg) {
-                    icon = `<span class="w-8 h-8 flex items-center justify-center text-point">${svg.outerHTML}</span>`;
+                    icon = `<span class="w-11 h-11 flex items-center justify-center text-point">${svg.outerHTML}</span>`;
                 } else {
                     icon = `<span class="w-8 h-8 flex items-center justify-center text-point">?</span>`;
                 }
