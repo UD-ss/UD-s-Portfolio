@@ -549,7 +549,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll('.skill-card').forEach(card => {
         card.addEventListener('click', (e) => {
-            if (e.target.closest('.skill-card-close') || e.target.closest('#skillClose')) return;
+            if (e.target.closest('#skillClose')) return;
             const cardRect = card.getBoundingClientRect();
             const overlay = document.getElementById('skillOverlay');
             const popup = document.getElementById('skillPopup');
@@ -557,16 +557,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const popupContent = document.getElementById('skillPopupContent');
             const list = card.querySelector('.skill-card-list ul');
 
-            popupContent.innerHTML = `
-                <div class="flex items-center justify-between mb-8 relative z-10">
-                    <h3 class="text-sm font-display font-semibold uppercase tracking-wider">${card.querySelector('h3').textContent}</h3>
-                    <span class="text-xs text-muted-light font-light">${card.querySelector('.text-xs').textContent}</span>
-                </div>
-                ${list ? list.outerHTML : ''}
-            `;
-
             popupInner.style.background = 'var(--card-bg)';
             popupInner.style.borderColor = 'var(--card-border)';
+            popupContent.innerHTML = '';
 
             gsap.set(popup, {
                 x: cardRect.left,
@@ -587,7 +580,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 width: window.innerWidth * 0.8,
                 height: window.innerHeight * 0.8,
                 duration: 0.6,
-                ease: 'power3.out'
+                ease: 'power3.out',
+                onComplete: () => {
+                    popupContent.innerHTML = `
+                        <div class="flex items-center justify-between mb-8 relative z-10">
+                            <h3 class="text-sm font-display font-semibold uppercase tracking-wider">${card.querySelector('h3').textContent}</h3>
+                            <span class="text-xs text-muted-light font-light">${card.querySelector('.text-xs').textContent}</span>
+                        </div>
+                        ${list ? list.outerHTML : ''}
+                    `;
+                }
             });
         });
     });
