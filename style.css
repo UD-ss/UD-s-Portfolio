@@ -623,16 +623,18 @@ html.lenis, html.lenis body { height: auto; }
 
 .popup-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
 }
 
 .popup-item {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 1rem 0.5rem;
+    padding: 1.25rem 0.5rem;
+    aspect-ratio: 1;
     border-radius: 0.75rem;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
