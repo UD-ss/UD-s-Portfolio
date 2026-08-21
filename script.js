@@ -558,8 +558,16 @@ document.addEventListener("DOMContentLoaded", () => {
             let gridHTML = '<div class="popup-grid">';
             items.forEach(item => {
                 const img = item.querySelector('img');
+                const svg = item.querySelector('svg');
                 const text = item.textContent.trim();
-                const icon = img ? `<img src="${img.src}" alt="${img.alt}">` : `<span class="w-5 h-5 flex items-center justify-center">${item.querySelector('i') ? item.querySelector('i').outerHTML : ''}</span>`;
+                let icon;
+                if (img) {
+                    icon = `<img src="${img.src}" alt="${img.alt}">`;
+                } else if (svg) {
+                    icon = `<span class="w-8 h-8 flex items-center justify-center text-point">${svg.outerHTML}</span>`;
+                } else {
+                    icon = `<span class="w-8 h-8 flex items-center justify-center text-point">?</span>`;
+                }
                 gridHTML += `<div class="popup-item">${icon}<span>${text}</span></div>`;
             });
             gridHTML += '</div>';
