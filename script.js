@@ -555,14 +555,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const popup = document.getElementById('skillPopup');
             const popupInner = document.getElementById('skillPopupInner');
             const popupContent = document.getElementById('skillPopupContent');
-            const list = card.querySelector('.skill-card-list');
+            const list = card.querySelector('.skill-card-list ul');
 
             popupContent.innerHTML = `
                 <div class="flex items-center justify-between mb-8 relative z-10">
                     <h3 class="text-sm font-display font-semibold uppercase tracking-wider">${card.querySelector('h3').textContent}</h3>
                     <span class="text-xs text-muted-light font-light">${card.querySelector('.text-xs').textContent}</span>
                 </div>
-                ${list ? list.innerHTML : ''}
+                ${list ? list.outerHTML : ''}
             `;
 
             popupInner.style.background = 'var(--card-bg)';
