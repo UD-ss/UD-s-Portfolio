@@ -227,40 +227,47 @@ html.lenis, html.lenis body { height: auto; }
 }
 .firefly-1 {
     width: 300px; height: 300px;
-    background: radial-gradient(circle, #3b82f6bb, transparent 65%);
+    background: radial-gradient(circle, #d4a574bb, transparent 65%);
     top: 12%; left: 8%;
     animation: ff-1 14s ease-in-out infinite;
 }
 .firefly-2 {
     width: 240px; height: 240px;
-    background: radial-gradient(circle, #06b6d4cc, transparent 65%);
+    background: radial-gradient(circle, #e8917acc, transparent 65%);
     top: 58%; left: 68%;
     animation: ff-2 18s ease-in-out infinite 2s;
 }
 .firefly-3 {
     width: 260px; height: 260px;
-    background: radial-gradient(circle, #818cf8aa, transparent 65%);
+    background: radial-gradient(circle, #c9908faa, transparent 65%);
     top: 32%; left: 78%;
     animation: ff-3 22s ease-in-out infinite 4s;
 }
 .firefly-4 {
     width: 200px; height: 200px;
-    background: radial-gradient(circle, #a78bfa99, transparent 65%);
+    background: radial-gradient(circle, #c4886b99, transparent 65%);
     top: 68%; left: 18%;
     animation: ff-4 16s ease-in-out infinite 1s;
 }
 .firefly-5 {
     width: 280px; height: 280px;
-    background: radial-gradient(circle, #22d3eebb, transparent 65%);
+    background: radial-gradient(circle, #d4a08abb, transparent 65%);
     top: 22%; left: 48%;
     animation: ff-5 24s ease-in-out infinite 3s;
 }
 .firefly-6 {
     width: 220px; height: 220px;
-    background: radial-gradient(circle, #60a5faaa, transparent 65%);
+    background: radial-gradient(circle, #c9a07aaa, transparent 65%);
     top: 48%; left: 6%;
     animation: ff-6 20s ease-in-out infinite 5s;
 }
+
+[data-theme="dark"] .firefly-1 { background: radial-gradient(circle, #3b82f6bb, transparent 65%); }
+[data-theme="dark"] .firefly-2 { background: radial-gradient(circle, #06b6d4cc, transparent 65%); }
+[data-theme="dark"] .firefly-3 { background: radial-gradient(circle, #818cf8aa, transparent 65%); }
+[data-theme="dark"] .firefly-4 { background: radial-gradient(circle, #a78bfa99, transparent 65%); }
+[data-theme="dark"] .firefly-5 { background: radial-gradient(circle, #22d3eebb, transparent 65%); }
+[data-theme="dark"] .firefly-6 { background: radial-gradient(circle, #60a5faaa, transparent 65%); }
 @keyframes ff-1 {
     0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
     25% { transform: translate(60px, -40px) scale(1.15); opacity: 1; }
