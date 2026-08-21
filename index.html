@@ -481,10 +481,10 @@
 
     <div class="skill-card-overlay" id="skillOverlay"></div>
     <div class="skill-card-popup" id="skillPopup">
-        <div class="skill-card-inner p-8 rounded-2xl border border-border-light relative overflow-hidden" id="skillPopupInner">
+        <div class="skill-card-inner p-8 rounded-2xl border border-border-light relative" id="skillPopupInner" style="overflow: visible; background: var(--card-bg); border-color: var(--card-border);">
             <div class="skill-card-glow"></div>
             <button class="skill-card-close" id="skillClose"></button>
-            <div id="skillPopupContent"></div>
+            <div id="skillPopupContent" style="overflow-y: auto; max-height: calc(80vh - 100px);"></div>
         </div>
     </div>
 

@@ -547,9 +547,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ScrollTrigger.addEventListener('refresh', () => { snapTargets = []; });
     window.addEventListener('resize', () => { snapTargets = []; });
 
-    document.querySelectorAll('.skill-card-header').forEach(header => {
-        header.addEventListener('click', () => {
-            const card = header.closest('.skill-card');
+    document.querySelectorAll('.skill-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.skill-card-close') || e.target.closest('#skillClose')) return;
             const cardRect = card.getBoundingClientRect();
             const overlay = document.getElementById('skillOverlay');
             const popup = document.getElementById('skillPopup');
