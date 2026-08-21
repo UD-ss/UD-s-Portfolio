@@ -215,6 +215,7 @@ html.lenis, html.lenis body { height: auto; }
 @media (hover: hover) {
     body { cursor: none !important; }
     a, button, [class*="cursor-hover"] { cursor: none !important; }
+    .skill-card, .skill-card * { cursor: none !important; }
 }
 
 
@@ -598,16 +599,13 @@ html.lenis, html.lenis body { height: auto; }
 
 .skill-card-popup {
     position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    left: 0;
+    top: 0;
     z-index: 210;
     pointer-events: none;
     opacity: 0;
-    overflow-y: auto;
-    max-height: 80vh;
-    width: 80vw;
-    max-width: 700px;
+    visibility: hidden;
+    overflow: hidden;
     border-radius: 1rem;
     border: 1px solid var(--card-border);
     background: var(--card-bg);
