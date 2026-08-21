@@ -547,6 +547,8 @@ document.addEventListener("DOMContentLoaded", () => {
     ScrollTrigger.addEventListener('refresh', () => { snapTargets = []; });
     window.addEventListener('resize', () => { snapTargets = []; });
 
+    let skillPopupSourceRect = null;
+
     document.querySelectorAll('.skill-card').forEach(card => {
         card.addEventListener('click', (e) => {
             if (e.target.closest('#skillClose')) return;
@@ -584,35 +586,86 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${gridHTML}
             `;
 
-            gsap.set(popup, { opacity: 0, visibility: 'visible' });
+            const cardRect = card.getBoundingClientRect();
+            skillPopupSourceRect = { x: cardRect.left, y: cardRect.top, width: cardRect.width, height: cardRect.height };
+
+            const finalW = Math.min(window.innerWidth * 0.85, 720);
+
+            gsap.set(popup, {
+                visibility: 'visible',
+                left: 0,
+                top: 0,
+                xPercent: 0,
+                yPercent: 0,
+                x: cardRect.left,
+                y: cardRect.top,
+                width: cardRect.width,
+                height: cardRect.height,
+                opacity: 1
+            });
+            popup.classList.add('is-active');
+
+            gsap.set(popup, { width: finalW, height: 'auto' });
+            const finalH = Math.min(popup.offsetHeight, window.innerHeight * 0.8);
+            const finalX = (window.innerWidth - finalW) / 2;
+            const finalY = (window.innerHeight - finalH) / 2;
+
+            gsap.set(popup, { width: cardRect.width, height: cardRect.height });
+
             gsap.set(overlay, { opacity: 0 });
             overlay.classList.add('is-active');
+            gsap.to(overlay, { opacity: 1, duration: 0.5, ease: 'power2.out' });
 
-            gsap.to(overlay, { opacity: 1, duration: 0.4, ease: 'power2.out' });
-            gsap.to(popup, { opacity: 1, duration: 0.4, ease: 'power2.out' });
-            popup.classList.add('is-active');
+            gsap.to(popup, {
+                x: finalX,
+                y: finalY,
+                width: finalW,
+                height: finalH,
+                duration: 0.65,
+                ease: 'power3.inOut',
+                onComplete: () => { popup.style.overflowY = 'auto'; }
+            });
+            gsap.fromTo(popupContent, { opacity: 0 }, { opacity: 1, duration: 0.4, delay: 0.25, ease: 'power2.out' });
         });
     });
 
     function closeSkillPopup() {
         const overlay = document.getElementById('skillOverlay');
         const popup = document.getElementById('skillPopup');
+        const src = skillPopupSourceRect;
 
-        gsap.to(popup, {
-            opacity: 0,
-            duration: 0.3,
-            ease: 'power2.in',
-            onComplete: () => {
-                popup.classList.remove('is-active');
-                gsap.set(popup, { visibility: 'hidden' });
-            }
-        });
         gsap.to(overlay, {
             opacity: 0,
-            duration: 0.3,
+            duration: 0.45,
             ease: 'power2.in',
             onComplete: () => overlay.classList.remove('is-active')
         });
+
+        if (src) {
+            popup.style.overflowY = 'hidden';
+            gsap.to(popup, {
+                x: src.x,
+                y: src.y,
+                width: src.width,
+                height: src.height,
+                duration: 0.55,
+                ease: 'power3.inOut',
+                onComplete: () => {
+                    popup.classList.remove('is-active');
+                    gsap.set(popup, { visibility: 'hidden' });
+                }
+            });
+        } else {
+            gsap.to(popup, {
+                opacity: 0,
+                duration: 0.3,
+                ease: 'power2.in',
+                onComplete: () => {
+                    popup.classList.remove('is-active');
+                    gsap.set(popup, { visibility: 'hidden' });
+                }
+            });
+        }
     }
 
     document.getElementById('skillOverlay').addEventListener('click', closeSkillPopup);
