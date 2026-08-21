@@ -578,18 +578,6 @@ html.lenis, html.lenis body { height: auto; }
     user-select: none;
 }
 
-.skill-card-header::after {
-    content: '';
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-right: 1.5px solid currentColor;
-    border-bottom: 1.5px solid currentColor;
-    transform: rotate(45deg);
-    transition: transform 0.3s ease;
-    opacity: 0.5;
-}
-
 .skill-card-overlay {
     position: fixed;
     inset: 0;
@@ -631,6 +619,43 @@ html.lenis, html.lenis body { height: auto; }
 .skill-card-popup.is-active {
     pointer-events: auto;
     opacity: 1;
+}
+
+.popup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1.5rem;
+}
+
+.popup-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0.5rem;
+    border-radius: 0.75rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    cursor: default;
+}
+
+.popup-item:hover {
+    transform: scale(1.08);
+}
+
+.popup-item img {
+    width: 2rem;
+    height: 2rem;
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+.popup-item span {
+    font-size: 0.7rem;
+    text-align: center;
+    color: var(--fg);
+    line-height: 1.3;
 }
 
 #skillPopupContent {
@@ -699,13 +724,8 @@ html.lenis, html.lenis body { height: auto; }
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: transform 0.3s ease;
     z-index: 10;
-}
-
-.skill-card-popup.is-active .skill-card-close {
-    opacity: 1;
 }
 
 .skill-card-close:hover {
@@ -718,7 +738,7 @@ html.lenis, html.lenis body { height: auto; }
     position: absolute;
     width: 14px;
     height: 1.5px;
-    background: currentColor;
+    background: var(--fg);
     border-radius: 1px;
 }
 
