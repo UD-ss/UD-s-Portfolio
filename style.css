@@ -653,6 +653,22 @@ html.lenis, html.lenis body { height: auto; }
     opacity: 1 !important;
 }
 
+body:not([data-theme="dark"]) .popup-item img[src*="openjdk"],
+body:not([data-theme="dark"]) .popup-item img[src*="ollama"] {
+    filter: invert(1) brightness(0.35) !important;
+}
+
+.popup-svg-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    color: var(--point);
+}
+
+.popup-svg-icon svg {
+    width: 2rem;
+    height: 2rem;
+}
+
 .popup-item span {
     font-size: 0.7rem;
     text-align: center;
