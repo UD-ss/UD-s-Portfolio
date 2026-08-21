@@ -628,6 +628,7 @@ html.lenis, html.lenis body { height: auto; }
 .popup-item {
     position: relative;
     overflow: hidden;
+    aspect-ratio: 1;
     border-radius: 0.75rem;
     cursor: default;
     transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
