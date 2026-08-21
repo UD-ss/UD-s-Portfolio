@@ -621,6 +621,59 @@ html.lenis, html.lenis body { height: auto; }
     opacity: 1;
 }
 
+#skillPopupContent {
+    overflow-y: auto;
+    max-height: calc(80vh - 80px);
+    padding-right: 8px;
+}
+
+#skillPopupContent ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    z-index: 10;
+}
+
+#skillPopupContent .skill-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 300;
+}
+
+#skillPopupContent .skill-item img {
+    filter: var(--logo-filter-base);
+    opacity: var(--logo-opacity-base);
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+#skillPopupContent .skill-item:hover img {
+    filter: grayscale(0) brightness(1);
+    opacity: 1;
+}
+
+#skillPopupContent .flex.items-center.justify-between::after {
+    display: none !important;
+}
+
+#skillPopupContent::-webkit-scrollbar {
+    width: 4px;
+}
+
+#skillPopupContent::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#skillPopupContent::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 2px;
+}
+
 .skill-card-close {
     position: absolute;
     top: 16px;
