@@ -222,43 +222,46 @@ html.lenis, html.lenis body { height: auto; }
 .firefly {
     position: absolute;
     border-radius: 50%;
-    filter: blur(60px);
+    filter: blur(50px);
     pointer-events: none;
     will-change: transform, opacity;
 }
+[data-theme="dark"] .firefly {
+    filter: blur(60px);
+}
 .firefly-1 {
     width: 300px; height: 300px;
-    background: radial-gradient(circle, #d4a574bb, transparent 65%);
+    background: radial-gradient(circle, #d4a574ee, transparent 65%);
     top: 12%; left: 8%;
     animation: ff-1 14s ease-in-out infinite;
 }
 .firefly-2 {
     width: 240px; height: 240px;
-    background: radial-gradient(circle, #e8917acc, transparent 65%);
+    background: radial-gradient(circle, #e8917aee, transparent 65%);
     top: 58%; left: 68%;
     animation: ff-2 18s ease-in-out infinite 2s;
 }
 .firefly-3 {
     width: 260px; height: 260px;
-    background: radial-gradient(circle, #c9908faa, transparent 65%);
+    background: radial-gradient(circle, #c9908fdd, transparent 65%);
     top: 32%; left: 78%;
     animation: ff-3 22s ease-in-out infinite 4s;
 }
 .firefly-4 {
     width: 200px; height: 200px;
-    background: radial-gradient(circle, #c4886b99, transparent 65%);
+    background: radial-gradient(circle, #c4886bcc, transparent 65%);
     top: 68%; left: 18%;
     animation: ff-4 16s ease-in-out infinite 1s;
 }
 .firefly-5 {
     width: 280px; height: 280px;
-    background: radial-gradient(circle, #d4a08abb, transparent 65%);
+    background: radial-gradient(circle, #d4a08aee, transparent 65%);
     top: 22%; left: 48%;
     animation: ff-5 24s ease-in-out infinite 3s;
 }
 .firefly-6 {
     width: 220px; height: 220px;
-    background: radial-gradient(circle, #c9a07aaa, transparent 65%);
+    background: radial-gradient(circle, #c9a07add, transparent 65%);
     top: 48%; left: 6%;
     animation: ff-6 20s ease-in-out infinite 5s;
 }
@@ -307,19 +310,19 @@ html.lenis, html.lenis body { height: auto; }
 
 .firefly-about-1 {
     width: 180px; height: 180px;
-    background: radial-gradient(circle, #d4a574aa, transparent 70%);
+    background: radial-gradient(circle, #d4a574dd, transparent 70%);
     top: 20%; right: 10%;
     animation: ff-about-1 20s ease-in-out infinite;
 }
 .firefly-about-2 {
     width: 140px; height: 140px;
-    background: radial-gradient(circle, #e8917a88, transparent 70%);
+    background: radial-gradient(circle, #e8917abb, transparent 70%);
     bottom: 25%; left: 8%;
     animation: ff-about-2 24s ease-in-out infinite 3s;
 }
 .firefly-about-3 {
     width: 120px; height: 120px;
-    background: radial-gradient(circle, #c9a07a77, transparent 70%);
+    background: radial-gradient(circle, #c9a07aaa, transparent 70%);
     top: 60%; left: 60%;
     animation: ff-about-3 18s ease-in-out infinite 1s;
 }
@@ -329,19 +332,19 @@ html.lenis, html.lenis body { height: auto; }
 
 .firefly-skills-1 {
     width: 160px; height: 160px;
-    background: radial-gradient(circle, #c4886baa, transparent 70%);
+    background: radial-gradient(circle, #c4886bdd, transparent 70%);
     top: 15%; left: 5%;
     animation: ff-skills-1 22s ease-in-out infinite;
 }
 .firefly-skills-2 {
     width: 200px; height: 200px;
-    background: radial-gradient(circle, #d4a08a99, transparent 70%);
+    background: radial-gradient(circle, #d4a08acc, transparent 70%);
     bottom: 20%; right: 12%;
     animation: ff-skills-2 26s ease-in-out infinite 2s;
 }
 .firefly-skills-3 {
     width: 130px; height: 130px;
-    background: radial-gradient(circle, #c9908f77, transparent 70%);
+    background: radial-gradient(circle, #c9908faa, transparent 70%);
     top: 50%; right: 30%;
     animation: ff-skills-3 20s ease-in-out infinite 4s;
 }
@@ -351,19 +354,19 @@ html.lenis, html.lenis body { height: auto; }
 
 .firefly-contact-1 {
     width: 220px; height: 220px;
-    background: radial-gradient(circle, #d4a57499, transparent 70%);
+    background: radial-gradient(circle, #d4a574cc, transparent 70%);
     top: 30%; left: 15%;
     animation: ff-contact-1 24s ease-in-out infinite;
 }
 .firefly-contact-2 {
     width: 160px; height: 160px;
-    background: radial-gradient(circle, #e8917a77, transparent 70%);
+    background: radial-gradient(circle, #e8917aaa, transparent 70%);
     bottom: 30%; right: 20%;
     animation: ff-contact-2 20s ease-in-out infinite 2s;
 }
 .firefly-contact-3 {
     width: 140px; height: 140px;
-    background: radial-gradient(circle, #c9a07a66, transparent 70%);
+    background: radial-gradient(circle, #c9a07a99, transparent 70%);
     top: 60%; left: 70%;
     animation: ff-contact-3 28s ease-in-out infinite 5s;
 }
@@ -606,12 +609,12 @@ html.lenis, html.lenis body { height: auto; }
     opacity: 0;
     visibility: hidden;
     overflow: hidden;
-    border-radius: 1rem;
+    border-radius: clamp(0.5rem, 1vw, 1rem);
     border: 1px solid var(--card-border);
     background: var(--card-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    padding: 2rem;
+    padding: clamp(1rem, 2vw, 2rem);
 }
 
 .skill-card-popup.is-active {
@@ -622,16 +625,16 @@ html.lenis, html.lenis body { height: auto; }
 .popup-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    gap: clamp(0.5rem, 1vw, 1rem);
 }
 
 .popup-item {
     position: relative;
     overflow: hidden;
     aspect-ratio: 1;
-    border-radius: 0.75rem;
+    border-radius: clamp(0.4rem, 0.75vw, 0.75rem);
     cursor: default;
-    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transform-origin: center center;
 }
 
 .popup-item:hover {
@@ -682,12 +685,12 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 .item-tile-view img {
-    width: 2.75rem;
-    height: 2.75rem;
+    width: clamp(1.5rem, 3vw, 2.75rem);
+    height: clamp(1.5rem, 3vw, 2.75rem);
 }
 
 .item-tile-view span {
-    font-size: 0.7rem;
+    font-size: clamp(0.5rem, 0.8vw, 0.7rem);
     text-align: center;
     color: var(--fg);
     line-height: 1.3;
