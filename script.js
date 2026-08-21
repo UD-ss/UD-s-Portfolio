@@ -550,9 +550,71 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('.skill-card-header').forEach(header => {
         header.addEventListener('click', () => {
             const card = header.closest('.skill-card');
-            card.classList.toggle('is-open');
+            const cardRect = card.getBoundingClientRect();
+            const overlay = document.getElementById('skillOverlay');
+            const popup = document.getElementById('skillPopup');
+            const popupInner = document.getElementById('skillPopupInner');
+            const popupContent = document.getElementById('skillPopupContent');
+            const list = card.querySelector('.skill-card-list');
+
+            popupContent.innerHTML = `
+                <div class="flex items-center justify-between mb-8 relative z-10">
+                    <h3 class="text-sm font-display font-semibold uppercase tracking-wider">${card.querySelector('h3').textContent}</h3>
+                    <span class="text-xs text-muted-light font-light">${card.querySelector('.text-xs').textContent}</span>
+                </div>
+                ${list ? list.innerHTML : ''}
+            `;
+
+            popupInner.style.background = 'var(--card-bg)';
+            popupInner.style.borderColor = 'var(--card-border)';
+
+            gsap.set(popup, {
+                x: cardRect.left,
+                y: cardRect.top,
+                width: cardRect.width,
+                height: cardRect.height,
+                opacity: 1,
+                visibility: 'visible'
+            });
+            popup.classList.add('is-active');
+
+            gsap.to(overlay, { opacity: 1, duration: 0.4, ease: 'power2.out' });
+            overlay.classList.add('is-active');
+
+            gsap.to(popup, {
+                x: window.innerWidth * 0.1,
+                y: window.innerHeight * 0.1,
+                width: window.innerWidth * 0.8,
+                height: window.innerHeight * 0.8,
+                duration: 0.6,
+                ease: 'power3.out'
+            });
         });
     });
+
+    function closeSkillPopup() {
+        const overlay = document.getElementById('skillOverlay');
+        const popup = document.getElementById('skillPopup');
+
+        gsap.to(popup, {
+            opacity: 0,
+            duration: 0.3,
+            ease: 'power2.in',
+            onComplete: () => {
+                popup.classList.remove('is-active');
+                gsap.set(popup, { visibility: 'hidden' });
+            }
+        });
+        gsap.to(overlay, {
+            opacity: 0,
+            duration: 0.4,
+            ease: 'power2.out',
+            onComplete: () => overlay.classList.remove('is-active')
+        });
+    }
+
+    document.getElementById('skillOverlay').addEventListener('click', closeSkillPopup);
+    document.getElementById('skillClose').addEventListener('click', closeSkillPopup);
 
     ScrollTrigger.refresh();
     computeSnapTargets();
