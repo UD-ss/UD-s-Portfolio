@@ -632,12 +632,12 @@ html.lenis, html.lenis body { height: auto; }
     aspect-ratio: 1;
 }
 
-.skill-item.popup-tile-mode {
+#skillPopupContent .skill-item.popup-tile-mode {
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: clamp(0.5rem, 1vw, 1rem);
+    gap: clamp(0.6rem, 1.1vw, 1.1rem);
     padding: 0.6rem;
     overflow: hidden;
     border-radius: clamp(0.4rem, 0.75vw, 0.75rem);
@@ -646,22 +646,22 @@ html.lenis, html.lenis body { height: auto; }
     transition: background-color 0.3s ease, border-color 0.3s ease, gap 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.skill-item.popup-tile-mode:hover {
+#skillPopupContent .skill-item.popup-tile-mode:hover {
     transform: scale(1.05);
 }
 
-.skill-item.popup-tile-mode .skill-logo,
-.skill-item.popup-tile-mode > svg {
+#skillPopupContent .skill-item.popup-tile-mode .skill-logo,
+#skillPopupContent .skill-item.popup-tile-mode > svg {
     filter: none !important;
     opacity: 1 !important;
-    width: clamp(2rem, 4vw, 3.5rem);
-    height: clamp(2rem, 4vw, 3.5rem);
+    width: clamp(2.5rem, 5vw, 4.5rem) !important;
+    height: clamp(2.5rem, 5vw, 4.5rem) !important;
     transition: filter 0.3s ease, opacity 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
 
-.skill-item.popup-tile-mode .skill-label {
+#skillPopupContent .skill-item.popup-tile-mode .skill-label {
     display: block;
-    font-size: clamp(0.7rem, 1.05vw, 0.9rem);
+    font-size: clamp(0.75rem, 1.05vw, 0.95rem);
     font-weight: 300;
     line-height: 1.35;
     color: var(--fg);
