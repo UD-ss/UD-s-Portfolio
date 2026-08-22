@@ -431,14 +431,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentStep = 0;
     let isLocked = false;
     let lockTimer = null;
-    let transitionStart = 0;
-    const STEP_INTERRUPT_MS = 380;
 
-    function canAcceptStep() {
-        if (skillPopupOpen) return false;
-        if (!isLocked) return true;
-        return performance.now() - transitionStart >= STEP_INTERRUPT_MS;
-    }
+    const INPUT_QUIET_MS = 100;
+    let lastInputAt = 0;
+    let gestureSeq = 0;
+    let consumedGesture = -1;
 
     function goToStep(stepIndex) {
         const targets = getSnapTargets();
@@ -448,7 +445,6 @@ document.addEventListener("DOMContentLoaded", () => {
         currentStep = stepIndex;
         updateProgress(stepIndex);
         isLocked = true;
-        transitionStart = performance.now();
         clearTimeout(lockTimer);
 
         lenis.scrollTo(targets[stepIndex], {
@@ -467,7 +463,11 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         e.lenisStopPropagation = true;
 
-        if (!canAcceptStep()) return;
+        const now = performance.now();
+        if (now - lastInputAt > INPUT_QUIET_MS) gestureSeq++;
+        lastInputAt = now;
+
+        if (skillPopupOpen || consumedGesture === gestureSeq) return;
 
         if (projectStepHandler && e.target.closest && e.target.closest('.horizontal-pin-wrap') && Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 20) {
             projectStepHandler(e.deltaX > 0 ? 1 : -1);
@@ -475,22 +475,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (Math.abs(e.deltaY) > 20) {
-            if (e.deltaY > 0) {
-                goToStep(currentStep + 1);
-            } else {
-                goToStep(currentStep - 1);
-            }
+            consumedGesture = gestureSeq;
+            goToStep(e.deltaY > 0 ? currentStep + 1 : currentStep - 1);
         }
     }, { passive: false, capture: true });
 
 
     window.addEventListener('keydown', (e) => {
-        if (!canAcceptStep()) return;
+        if (skillPopupOpen) return;
         if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
             e.preventDefault();
+            if (e.repeat || consumedGesture === gestureSeq) return;
+            gestureSeq++;
+            consumedGesture = gestureSeq;
             goToStep(currentStep + 1);
         } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
             e.preventDefault();
+            if (e.repeat || consumedGesture === gestureSeq) return;
+            gestureSeq++;
+            consumedGesture = gestureSeq;
             goToStep(currentStep - 1);
         }
     });
@@ -502,7 +505,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: true });
 
     window.addEventListener('touchend', (e) => {
-        if (!canAcceptStep()) return;
+        if (skillPopupOpen) return;
         const diff = touchY - e.changedTouches[0].clientY;
         if (Math.abs(diff) > 40) {
             if (diff > 0) {
