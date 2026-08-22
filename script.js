@@ -432,10 +432,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let isLocked = false;
     let lockTimer = null;
 
-    const INPUT_QUIET_MS = 100;
-    let lastInputAt = 0;
-    let gestureSeq = 0;
-    let consumedGesture = -1;
+    const WHEEL_STEP_THRESHOLD = 170;
+    const WHEEL_NOTCH_DELTA = 75;
+    const BUFFER_DECAY_MS = 260;
+    let wheelBuffer = 0;
+    let lastWheelAt = 0;
 
     function goToStep(stepIndex) {
         const targets = getSnapTargets();
@@ -463,20 +464,32 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         e.lenisStopPropagation = true;
 
-        const now = performance.now();
-        if (now - lastInputAt > INPUT_QUIET_MS) gestureSeq++;
-        lastInputAt = now;
-
-        if (skillPopupOpen || consumedGesture === gestureSeq) return;
-
         if (projectStepHandler && e.target.closest && e.target.closest('.horizontal-pin-wrap') && Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 20) {
             projectStepHandler(e.deltaX > 0 ? 1 : -1);
             return;
         }
 
-        if (Math.abs(e.deltaY) > 20) {
-            consumedGesture = gestureSeq;
+        if (skillPopupOpen) { wheelBuffer = 0; return; }
+
+        const now = performance.now();
+        const dt = Math.max(now - lastWheelAt, 0);
+        lastWheelAt = now;
+
+        if (Math.abs(e.deltaY) < 4) return;
+
+        if (Math.abs(e.deltaY) >= WHEEL_NOTCH_DELTA) {
+            wheelBuffer = 0;
             goToStep(e.deltaY > 0 ? currentStep + 1 : currentStep - 1);
+            return;
+        }
+
+        wheelBuffer = wheelBuffer * Math.exp(-dt / BUFFER_DECAY_MS) + e.deltaY;
+        wheelBuffer = Math.max(-900, Math.min(900, wheelBuffer));
+
+        if (Math.abs(wheelBuffer) >= WHEEL_STEP_THRESHOLD) {
+            const dir = wheelBuffer > 0 ? 1 : -1;
+            wheelBuffer = 0;
+            goToStep(currentStep + dir);
         }
     }, { passive: false, capture: true });
 
@@ -485,15 +498,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (skillPopupOpen) return;
         if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
             e.preventDefault();
-            if (e.repeat || consumedGesture === gestureSeq) return;
-            gestureSeq++;
-            consumedGesture = gestureSeq;
+            if (e.repeat) return;
             goToStep(currentStep + 1);
         } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
             e.preventDefault();
-            if (e.repeat || consumedGesture === gestureSeq) return;
-            gestureSeq++;
-            consumedGesture = gestureSeq;
+            if (e.repeat) return;
             goToStep(currentStep - 1);
         }
     });
