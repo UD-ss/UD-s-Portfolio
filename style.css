@@ -689,9 +689,12 @@ html.lenis, html.lenis body { height: auto; }
     height: 100%;
 }
 
-body:not([data-theme="dark"]) img[src*="openjdk"],
 body:not([data-theme="dark"]) img[src*="ollama"] {
     filter: invert(1) brightness(0.4) !important;
+}
+
+body:not([data-theme="dark"]) #skillPopupContent .skill-item.popup-tile-mode img[src*="ollama"] {
+    filter: invert(1) brightness(0.35) !important;
 }
 
 .skill-item {
