@@ -637,8 +637,8 @@ html.lenis, html.lenis body { height: auto; }
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: clamp(0.4rem, 0.8vw, 0.75rem);
-    padding: 0.5rem;
+    gap: clamp(0.5rem, 1vw, 1rem);
+    padding: 0.6rem;
     overflow: hidden;
     border-radius: clamp(0.4rem, 0.75vw, 0.75rem);
     background: var(--glass-bg);
@@ -650,16 +650,20 @@ html.lenis, html.lenis body { height: auto; }
     transform: scale(1.05);
 }
 
-.skill-item.popup-tile-mode img,
-.skill-item.popup-tile-mode svg {
-    width: clamp(1.5rem, 3vw, 2.75rem);
-    height: clamp(1.5rem, 3vw, 2.75rem);
-    transition: width 0.3s ease, height 0.3s ease;
+.skill-item.popup-tile-mode .skill-logo,
+.skill-item.popup-tile-mode > svg {
+    filter: none !important;
+    opacity: 1 !important;
+    width: clamp(2rem, 4vw, 3.5rem);
+    height: clamp(2rem, 4vw, 3.5rem);
+    transition: filter 0.3s ease, opacity 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
 
-.skill-item.popup-tile-mode span {
-    font-size: clamp(0.55rem, 0.85vw, 0.72rem);
-    line-height: 1.3;
+.skill-item.popup-tile-mode .skill-label {
+    display: block;
+    font-size: clamp(0.7rem, 1.05vw, 0.9rem);
+    font-weight: 300;
+    line-height: 1.35;
     color: var(--fg);
     white-space: normal;
     transition: font-size 0.3s ease;
