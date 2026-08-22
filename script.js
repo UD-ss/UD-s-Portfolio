@@ -431,6 +431,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentStep = 0;
     let isLocked = false;
     let lockTimer = null;
+    let transitionStart = 0;
+    const STEP_INTERRUPT_MS = 380;
+
+    function canAcceptStep() {
+        if (skillPopupOpen) return false;
+        if (!isLocked) return true;
+        return performance.now() - transitionStart >= STEP_INTERRUPT_MS;
+    }
 
     function goToStep(stepIndex) {
         const targets = getSnapTargets();
@@ -440,6 +448,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentStep = stepIndex;
         updateProgress(stepIndex);
         isLocked = true;
+        transitionStart = performance.now();
         clearTimeout(lockTimer);
 
         lenis.scrollTo(targets[stepIndex], {
@@ -447,7 +456,8 @@ document.addEventListener("DOMContentLoaded", () => {
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             lock: true,
             onComplete: () => {
-                lockTimer = setTimeout(() => { isLocked = false; }, 250);
+                clearTimeout(lockTimer);
+                lockTimer = setTimeout(() => { isLocked = false; }, 120);
             }
         });
     }
@@ -457,7 +467,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         e.lenisStopPropagation = true;
 
-        if (isLocked || skillPopupOpen) return;
+        if (!canAcceptStep()) return;
 
         if (projectStepHandler && e.target.closest && e.target.closest('.horizontal-pin-wrap') && Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 20) {
             projectStepHandler(e.deltaX > 0 ? 1 : -1);
@@ -475,7 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     window.addEventListener('keydown', (e) => {
-        if (isLocked || skillPopupOpen) return;
+        if (!canAcceptStep()) return;
         if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
             e.preventDefault();
             goToStep(currentStep + 1);
@@ -492,7 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: true });
 
     window.addEventListener('touchend', (e) => {
-        if (isLocked) return;
+        if (!canAcceptStep()) return;
         const diff = touchY - e.changedTouches[0].clientY;
         if (Math.abs(diff) > 40) {
             if (diff > 0) {
