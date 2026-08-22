@@ -659,6 +659,21 @@ html.lenis, html.lenis body { height: auto; }
     transition: filter 0.3s ease, opacity 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
 
+#skillPopupContent .skill-item.popup-tile-mode > .flex.items-center.justify-center {
+    width: auto !important;
+    height: auto !important;
+}
+
+#skillPopupContent .skill-item.popup-tile-mode svg[data-lucide],
+#skillPopupContent .skill-item.popup-tile-mode > span > svg {
+    width: clamp(2.25rem, 4.5vw, 4rem) !important;
+    height: clamp(2.25rem, 4.5vw, 4rem) !important;
+    max-width: none;
+    color: var(--point);
+    filter: none !important;
+    opacity: 1 !important;
+}
+
 #skillPopupContent .skill-item.popup-tile-mode .skill-label {
     display: block;
     font-size: clamp(0.75rem, 1.05vw, 0.95rem);
