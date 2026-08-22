@@ -448,13 +448,16 @@ document.addEventListener("DOMContentLoaded", () => {
         isLocked = true;
         clearTimeout(lockTimer);
 
+        const dist = Math.abs(targets[stepIndex] - lenis.actualScroll);
+        const dur = Math.min(0.85, Math.max(0.45, dist / 1600));
+
         lenis.scrollTo(targets[stepIndex], {
-            duration: 1.1,
+            duration: dur,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             lock: true,
             onComplete: () => {
                 clearTimeout(lockTimer);
-                lockTimer = setTimeout(() => { isLocked = false; }, 120);
+                lockTimer = setTimeout(() => { isLocked = false; }, 60);
             }
         });
     }
@@ -477,6 +480,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (Math.abs(e.deltaY) < 4) return;
 
+        const threshold = isLocked ? WHEEL_STEP_THRESHOLD * 0.55 : WHEEL_STEP_THRESHOLD;
+
         if (Math.abs(e.deltaY) >= WHEEL_NOTCH_DELTA) {
             wheelBuffer = 0;
             goToStep(e.deltaY > 0 ? currentStep + 1 : currentStep - 1);
@@ -486,7 +491,7 @@ document.addEventListener("DOMContentLoaded", () => {
         wheelBuffer = wheelBuffer * Math.exp(-dt / BUFFER_DECAY_MS) + e.deltaY;
         wheelBuffer = Math.max(-900, Math.min(900, wheelBuffer));
 
-        if (Math.abs(wheelBuffer) >= WHEEL_STEP_THRESHOLD) {
+        if (Math.abs(wheelBuffer) >= threshold) {
             const dir = wheelBuffer > 0 ? 1 : -1;
             wheelBuffer = 0;
             goToStep(currentStep + dir);
