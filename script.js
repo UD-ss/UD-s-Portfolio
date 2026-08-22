@@ -549,11 +549,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let skillPopupSourceRect = null;
     let skillPopupCardPositions = [];
+    let skillPopupItemRestore = [];
+    let skillPopupTl = null;
     let skillPopupOpen = false;
 
     document.querySelectorAll('.skill-card').forEach(card => {
         card.addEventListener('click', (e) => {
             if (e.target.closest('#skillClose')) return;
+            if (skillPopupOpen) return;
             const overlay = document.getElementById('skillOverlay');
             const popup = document.getElementById('skillPopup');
             const popupContent = document.getElementById('skillPopupContent');
@@ -563,44 +566,22 @@ document.addEventListener("DOMContentLoaded", () => {
             skillPopupSourceRect = { x: cardRect.left, y: cardRect.top, width: cardRect.width, height: cardRect.height };
 
             const cardItems = Array.from(items);
-            const cardItemPositions = cardItems.map(it => {
+            skillPopupCardPositions = cardItems.map(it => {
                 const r = it.getBoundingClientRect();
                 return { x: r.left - cardRect.left, y: r.top - cardRect.top, w: r.width, h: r.height };
             });
-            skillPopupCardPositions = cardItemPositions;
+            skillPopupItemRestore = cardItems.map(it => ({ parent: it.parentNode, next: it.nextSibling }));
 
-            let gridHTML = '<div class="popup-grid">';
-            items.forEach((item, i) => {
-                const img = item.querySelector('img');
-                const svg = item.querySelector('svg');
-                let label = item.textContent.trim()
-                    .replace(/\s*\([^)]*\)/g, '')
-                    .replace(/\s+\d+([.,]\d+)*\+?$/g, '')
-                    .replace(/\s+MV\d+$/g, '')
-                    .trim();
-                let rowIcon = '';
-                let tileIcon = '';
-                if (img) {
-                    rowIcon = `<img src="${img.src}" alt="${img.alt}">`;
-                    tileIcon = `<img src="${img.src}" alt="${img.alt}">`;
-                } else if (svg) {
-                    const cleanSvg = svg.outerHTML.replace(/class="[^"]*"/g, '');
-                    rowIcon = cleanSvg;
-                    tileIcon = `<span class="popup-svg-icon flex items-center justify-center">${cleanSvg}</span>`;
-                }
-                gridHTML += `<div class="popup-item">
-                    <div class="item-row-view">${rowIcon}<span>${label}</span></div>
-                    <div class="item-tile-view">${tileIcon}<span>${label}</span></div>
-                </div>`;
-            });
-            gridHTML += '</div>';
+            let slotsHTML = '<div class="popup-grid">';
+            cardItems.forEach(() => { slotsHTML += '<div class="popup-slot"></div>'; });
+            slotsHTML += '</div>';
 
             popupContent.innerHTML = `
                 <div class="flex items-center justify-between mb-6 pr-10">
                     <h3 class="text-sm font-display font-semibold uppercase tracking-wider">${card.querySelector('h3').textContent}</h3>
                     <span class="text-xs text-muted-light font-light">${card.querySelector('.text-xs').textContent}</span>
                 </div>
-                ${gridHTML}
+                ${slotsHTML}
             `;
 
             const finalW = Math.min(window.innerWidth * 0.45, window.innerHeight * 0.75, 960);
@@ -619,9 +600,10 @@ document.addEventListener("DOMContentLoaded", () => {
             popup.classList.add('is-active');
             skillPopupOpen = true;
             lenis.stop();
+
             const finalH = Math.min(popup.offsetHeight, window.innerHeight * 0.8);
-            const gridItems = Array.from(popupContent.querySelectorAll('.popup-item'));
-            const gridPositions = gridItems.map(el => ({
+            const slots = Array.from(popupContent.querySelectorAll('.popup-slot'));
+            const gridPositions = slots.map(el => ({
                 x: el.offsetLeft,
                 y: el.offsetTop,
                 w: el.offsetWidth,
@@ -632,22 +614,25 @@ document.addEventListener("DOMContentLoaded", () => {
             const finalX = (window.innerWidth - finalW) / 2;
             const finalY = (window.innerHeight - finalH) / 2;
 
-            gridItems.forEach((el, i) => {
+            cardItems.forEach((el, i) => {
+                el.classList.remove('popup-tile-mode');
+                el.dataset.skillIdx = i;
+                void el.offsetWidth;
+                popupContent.appendChild(el);
                 el.style.position = 'absolute';
                 el.style.zIndex = '1';
-                const cp = cardItemPositions[i] || { x: 0, y: 0, w: 60, h: 30 };
-                const rowView = el.querySelector('.item-row-view');
-                const tileView = el.querySelector('.item-tile-view');
-                gsap.set(el, { left: cp.x, top: cp.y, width: cp.w, height: cp.h, opacity: 1 });
-                gsap.set(rowView, { opacity: 1 });
-                gsap.set(tileView, { opacity: 0 });
+                const cp = skillPopupCardPositions[i] || { x: 0, y: 0, w: 60, h: 30 };
+                gsap.set(el, { left: cp.x, top: cp.y, width: cp.w, height: cp.h });
             });
 
             gsap.set(overlay, { opacity: 0 });
             overlay.classList.add('is-active');
             gsap.to(overlay, { opacity: 1, duration: 0.5, ease: 'power2.out' });
 
-            gsap.to(popup, {
+            if (skillPopupTl) skillPopupTl.kill();
+            skillPopupTl = gsap.timeline();
+
+            skillPopupTl.to(popup, {
                 x: finalX,
                 y: finalY,
                 width: finalW,
@@ -655,19 +640,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 duration: 0.65,
                 ease: 'power3.inOut',
                 onComplete: () => { popup.style.overflowY = 'auto'; }
-            });
+            }, 0);
 
-            gsap.set(popupContent, { opacity: 1 });
-            const popupHeader = popupContent.querySelector('div');
-            if (popupHeader) {
-                gsap.fromTo(popupHeader, { opacity: 0 }, { opacity: 1, duration: 0.4, delay: 0.3, ease: 'power2.out' });
-            }
+            skillPopupTl.fromTo(popupContent.querySelector('div'),
+                { opacity: 0 },
+                { opacity: 1, duration: 0.4, delay: 0.3, ease: 'power2.out' }, 0);
 
-            gridItems.forEach((el, i) => {
+            cardItems.forEach((el, i) => {
                 const gp = gridPositions[i] || { x: 0, y: 0, w: 120, h: 120 };
-                const rowView = el.querySelector('.item-row-view');
-                const tileView = el.querySelector('.item-tile-view');
-                gsap.to(el, {
+                skillPopupTl.add(() => el.classList.add('popup-tile-mode'), 0.15 + i * 0.03);
+                skillPopupTl.to(el, {
                     left: gp.x,
                     top: gp.y,
                     width: gp.w,
@@ -679,10 +661,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         el.style.position = '';
                         el.style.zIndex = '';
                         gsap.set(el, { clearProps: 'all' });
+                        slots[i].appendChild(el);
                     }
-                });
-                gsap.to(rowView, { opacity: 0, duration: 0.22, delay: 0.28 + i * 0.03, ease: 'power2.out' });
-                gsap.to(tileView, { opacity: 1, duration: 0.28, delay: 0.3 + i * 0.03, ease: 'power2.out' });
+                }, i * 0.03);
             });
         });
     });
@@ -693,20 +674,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const popupContent = document.getElementById('skillPopupContent');
         const src = skillPopupSourceRect;
 
-        gsap.to(overlay, {
-            opacity: 0,
-            duration: 0.5,
-            delay: 0.1,
-            ease: 'power2.in',
-            onComplete: () => overlay.classList.remove('is-active')
-        });
+        if (!popup.classList.contains('is-active')) return;
+        if (skillPopupTl) skillPopupTl.kill();
+
+        const T = 0.6;
+        const STAG = 0.03;
 
         if (src) {
             popup.style.overflowY = 'hidden';
-            const gridItems = Array.from(popupContent.querySelectorAll('.popup-item'));
+            const cardItems = Array.from(popupContent.querySelectorAll('.skill-item'))
+                .sort((a, b) => (+a.dataset.skillIdx) - (+b.dataset.skillIdx));
+            const N = cardItems.length;
             const popupRect = popup.getBoundingClientRect();
 
-            const gridPositions = gridItems.map(el => {
+            const gridPositions = cardItems.map(el => {
                 const r = el.getBoundingClientRect();
                 return {
                     x: r.left - popupRect.left,
@@ -716,61 +697,89 @@ document.addEventListener("DOMContentLoaded", () => {
                 };
             });
 
-            gridItems.forEach((el, i) => {
+            cardItems.forEach((el, i) => {
+                popupContent.appendChild(el);
                 el.style.position = 'absolute';
                 el.style.zIndex = '1';
                 const gp = gridPositions[i];
                 gsap.set(el, { left: gp.x, top: gp.y, width: gp.w, height: gp.h });
             });
 
-            gsap.to(popup, {
-                x: src.x,
-                y: src.y,
-                width: src.width,
-                height: src.height,
-                duration: 0.6,
-                ease: 'power3.inOut',
+            skillPopupTl = gsap.timeline({
                 onComplete: () => {
                     popup.classList.remove('is-active');
                     gsap.set(popup, { visibility: 'hidden' });
-                    gridItems.forEach(el => {
+                    cardItems.forEach((el, i) => {
+                        el.classList.remove('popup-tile-mode');
                         el.style.position = '';
                         el.style.zIndex = '';
-                        gsap.set(el, { clearProps: 'all' });
+                        el.style.left = '';
+                        el.style.top = '';
+                        el.style.width = '';
+                        el.style.height = '';
+                        delete el.dataset.skillIdx;
+                        const restore = skillPopupItemRestore[i];
+                        if (restore && restore.parent) {
+                            restore.parent.insertBefore(el, restore.next);
+                        }
                     });
+                    popupContent.innerHTML = '';
                     skillPopupOpen = false;
+                    skillPopupTl = null;
                     lenis.start();
                 }
             });
 
-            gridItems.forEach((el, i) => {
+            skillPopupTl.to(popup, {
+                x: src.x,
+                y: src.y,
+                width: src.width,
+                height: src.height,
+                duration: T,
+                ease: 'power3.inOut'
+            }, 0);
+
+            cardItems.forEach((el, i) => {
                 const cp = skillPopupCardPositions[i] || { x: 0, y: 0, w: 60, h: 30 };
-                const rowView = el.querySelector('.item-row-view');
-                const tileView = el.querySelector('.item-tile-view');
-                gsap.to(tileView, { opacity: 0, duration: 0.2, delay: 0.04 + i * 0.03, ease: 'power2.in' });
-                gsap.to(rowView, { opacity: 1, duration: 0.2, delay: 0.04 + i * 0.03, ease: 'power2.out' });
-                gsap.to(el, {
+                const d = (N - 1 - i) * STAG;
+                skillPopupTl.add(() => el.classList.remove('popup-tile-mode'), d);
+                skillPopupTl.to(el, {
                     left: cp.x,
                     top: cp.y,
                     width: cp.w,
                     height: cp.h,
-                    duration: 0.6,
-                    ease: 'power3.inOut',
-                    delay: i * 0.025
-                });
+                    duration: T - d,
+                    ease: 'power3.inOut'
+                }, d);
             });
-        } else {
-            gsap.to(popup, {
+
+            skillPopupTl.to(overlay, {
                 opacity: 0,
-                duration: 0.3,
+                duration: 0.4,
                 ease: 'power2.in',
+                onComplete: () => overlay.classList.remove('is-active')
+            }, T - 0.4);
+        } else {
+            skillPopupTl = gsap.timeline({
                 onComplete: () => {
                     popup.classList.remove('is-active');
                     gsap.set(popup, { visibility: 'hidden' });
                     skillPopupOpen = false;
+                    skillPopupTl = null;
                     lenis.start();
                 }
             });
+            skillPopupTl.to(overlay, {
+                opacity: 0,
+                duration: 0.3,
+                ease: 'power2.in',
+                onComplete: () => overlay.classList.remove('is-active')
+            }, 0);
+            skillPopupTl.to(popup, {
+                opacity: 0,
+                duration: 0.3,
+                ease: 'power2.in'
+            }, 0);
         }
     }
 
