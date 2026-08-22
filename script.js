@@ -448,16 +448,13 @@ document.addEventListener("DOMContentLoaded", () => {
         isLocked = true;
         clearTimeout(lockTimer);
 
-        const dist = Math.abs(targets[stepIndex] - lenis.actualScroll);
-        const dur = Math.min(0.85, Math.max(0.45, dist / 1600));
-
         lenis.scrollTo(targets[stepIndex], {
-            duration: dur,
+            duration: 1.1,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            lock: true,
+            force: true,
             onComplete: () => {
                 clearTimeout(lockTimer);
-                lockTimer = setTimeout(() => { isLocked = false; }, 60);
+                lockTimer = setTimeout(() => { isLocked = false; }, 120);
             }
         });
     }
