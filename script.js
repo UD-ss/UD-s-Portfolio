@@ -553,6 +553,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let skillPopupTl = null;
     let skillPopupOpen = false;
 
+    function addMorphMask(tl, el, at, turnOn) {
+        const kids = Array.from(el.children);
+        tl.to(kids, { opacity: 0, duration: 0.08, ease: 'power1.in' }, at);
+        tl.add(() => el.classList.toggle('popup-tile-mode', turnOn), at + 0.09);
+        tl.to(kids, { opacity: 1, duration: 0.22, ease: 'power1.out' }, at + 0.11);
+    }
+
     document.querySelectorAll('.skill-card').forEach(card => {
         card.addEventListener('click', (e) => {
             if (e.target.closest('#skillClose')) return;
@@ -566,6 +573,24 @@ document.addEventListener("DOMContentLoaded", () => {
             skillPopupSourceRect = { x: cardRect.left, y: cardRect.top, width: cardRect.width, height: cardRect.height };
 
             const cardItems = Array.from(items);
+            cardItems.forEach(el => {
+                if (el.querySelector('.skill-label')) return;
+                const labelSpan = document.createElement('span');
+                labelSpan.className = 'skill-label';
+                let anchor = null;
+                for (const n of Array.from(el.childNodes)) {
+                    if (n.nodeType === Node.ELEMENT_NODE) { anchor = n; break; }
+                }
+                if (anchor) {
+                    let sib = anchor.nextSibling;
+                    while (sib) {
+                        const next = sib.nextSibling;
+                        labelSpan.appendChild(sib);
+                        sib = next;
+                    }
+                    el.appendChild(labelSpan);
+                }
+            });
             skillPopupCardPositions = cardItems.map(it => {
                 const r = it.getBoundingClientRect();
                 return { x: r.left - cardRect.left, y: r.top - cardRect.top, w: r.width, h: r.height };
@@ -648,7 +673,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             cardItems.forEach((el, i) => {
                 const gp = gridPositions[i] || { x: 0, y: 0, w: 120, h: 120 };
-                skillPopupTl.add(() => el.classList.add('popup-tile-mode'), 0.15 + i * 0.03);
+                addMorphMask(skillPopupTl, el, i * 0.03, true);
                 skillPopupTl.to(el, {
                     left: gp.x,
                     top: gp.y,
@@ -717,6 +742,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         el.style.top = '';
                         el.style.width = '';
                         el.style.height = '';
+                        el.querySelectorAll(':scope > *').forEach(c => { c.style.opacity = ''; });
                         delete el.dataset.skillIdx;
                         const restore = skillPopupItemRestore[i];
                         if (restore && restore.parent) {
@@ -742,7 +768,7 @@ document.addEventListener("DOMContentLoaded", () => {
             cardItems.forEach((el, i) => {
                 const cp = skillPopupCardPositions[i] || { x: 0, y: 0, w: 60, h: 30 };
                 const d = (N - 1 - i) * STAG;
-                skillPopupTl.add(() => el.classList.remove('popup-tile-mode'), d);
+                addMorphMask(skillPopupTl, el, d, false);
                 skillPopupTl.to(el, {
                     left: cp.x,
                     top: cp.y,
