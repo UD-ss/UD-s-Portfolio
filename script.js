@@ -112,11 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.setAttribute('data-theme', next);
             localStorage.setItem('ud-theme', next);
             sendLog('theme', { from: current, to: next });
-
-            const nav = document.getElementById('nav');
-            if (nav && window.scrollY > 80) {
-                nav.style.background = next === 'dark' ? 'rgba(28,30,32,0.85)' : 'rgba(236,231,221,0.85)';
-            }
         });
     }
 
@@ -362,26 +357,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (progressFill) progressFill.style.height = pct + '%';
             if (progressDot) progressDot.style.top = pct + '%';
         }
-    }
-
-
-    const nav = document.getElementById('nav');
-    if (nav) {
-        ScrollTrigger.create({
-            start: "top -80",
-            onUpdate: (self) => {
-                if (self.direction === 1 && self.progress > 0) {
-                    nav.style.backdropFilter = 'blur(12px)';
-                    nav.style.webkitBackdropFilter = 'blur(12px)';
-                    nav.style.background = document.body.getAttribute('data-theme') === 'dark'
-                        ? 'rgba(28,30,32,0.85)' : 'rgba(236,231,221,0.85)';
-                } else if (self.scroll() < 100) {
-                    nav.style.backdropFilter = 'none';
-                    nav.style.webkitBackdropFilter = 'none';
-                    nav.style.background = 'transparent';
-                }
-            }
-        });
     }
 
 
