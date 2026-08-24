@@ -237,11 +237,10 @@ document.addEventListener("DOMContentLoaded", () => {
             once: true,
             onEnter: () => {
                 const steps = panelStepX();
-                if (steps.length < 3) return;
+                if (steps.length < 2) return;
                 playing = true;
                 gsap.timeline({ onComplete: () => { playing = false; } })
                     .to(horizonTrack, { x: steps[1], duration: 1.1, ease: "power3.inOut" })
-                    .to(horizonTrack, { x: steps[2], duration: 1.1, ease: "power3.inOut" })
                     .to(horizonTrack, { x: steps[0], duration: 1.2, ease: "power3.inOut" });
             }
         });
@@ -508,8 +507,8 @@ document.addEventListener("DOMContentLoaded", () => {
         '#about': 1,
         '#skills': 2,
         '#projects': 3,
-        '#more-projects': 6,
-        '#contact': 7
+        '#more-projects': 4,
+        '#contact': 5
     };
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', (e) => {
