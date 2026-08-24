@@ -1,14 +1,14 @@
 #hero-name {
     font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
     font-weight: 900;
-    font-size: clamp(72px, 14vw, 176px) !important;
+    font-size: clamp(72px, min(14vw, 16vh), 176px) !important;
     transition: font-weight 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 #hero-name:hover {
     font-weight: 300;
 }
 h2[class*="tracking-[0.3em]"] {
-    font-size: clamp(26px, 2.6vw, 40px) !important;
+    font-size: clamp(26px, min(2.6vw, 3vh), 40px) !important;
     letter-spacing: 0.18em;
 }
 #progress-rail {
@@ -47,25 +47,25 @@ h2[class*="tracking-[0.3em]"] {
     #progress-rail { display: none; }
 }
 #about-content blockquote {
-    font-size: clamp(30px, 4.5vw, 56px) !important;
+    font-size: clamp(30px, min(4.5vw, 5.5vh), 56px) !important;
 }
 .panel h3 {
-    font-size: clamp(32px, 5vw, 60px) !important;
+    font-size: clamp(32px, min(5vw, 6.5vh), 60px) !important;
 }
 .panel > span {
-    font-size: clamp(96px, 12vw, 192px) !important;
+    font-size: clamp(96px, min(12vw, 15vh), 192px) !important;
 }
 .panel p {
     min-height: 4.875em;
 }
 .project-list-item h3 {
-    font-size: clamp(24px, 3.5vw, 36px) !important;
+    font-size: clamp(24px, min(3.5vw, 4.5vh), 36px) !important;
 }
 a[href^="mailto:"] .magnetic-inner {
-    font-size: clamp(30px, 5vw, 60px) !important;
+    font-size: clamp(30px, min(5vw, 6.5vh), 60px) !important;
 }
 .preloader-text {
-    font-size: clamp(60px, 8vw, 96px) !important;
+    font-size: clamp(60px, min(8vw, 10vh), 96px) !important;
 }
 
 
@@ -447,7 +447,7 @@ html.lenis, html.lenis body { height: auto; }
 
 
 #projects .aspect-\[16\/10\] {
-    width: min(100%, calc(32vh * 1.6));
+    width: min(100%, calc(32vh * 1.6), calc(55vw - 4rem));
     aspect-ratio: 16 / 10;
     margin-left: auto;
     margin-right: auto;
