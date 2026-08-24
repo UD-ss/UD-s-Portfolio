@@ -237,10 +237,11 @@ document.addEventListener("DOMContentLoaded", () => {
             once: true,
             onEnter: () => {
                 const steps = panelStepX();
-                if (steps.length < 2) return;
+                if (steps.length < 3) return;
                 playing = true;
                 gsap.timeline({ onComplete: () => { playing = false; } })
                     .to(horizonTrack, { x: steps[1], duration: 1.1, ease: "power3.inOut" })
+                    .to(horizonTrack, { x: steps[2], duration: 1.1, ease: "power3.inOut" })
                     .to(horizonTrack, { x: steps[0], duration: 1.2, ease: "power3.inOut" });
             }
         });
