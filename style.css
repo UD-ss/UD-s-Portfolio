@@ -914,6 +914,9 @@ body:not([data-theme="dark"]) #skillPopupContent .skill-item.popup-tile-mode img
         padding-left: min(3.33vw, 5.93vh) !important;
         padding-right: min(3.33vw, 5.93vh) !important;
     }
+    #about > .max-w-5xl {
+        max-width: min(62vw, 110vh) !important;
+    }
     #about > .max-w-5xl > .flex {
         gap: min(0.83vw, 1.48vh) !important;
         margin-bottom: min(3.33vw, 5.93vh) !important;
@@ -985,8 +988,5 @@ body:not([data-theme="dark"]) #skillPopupContent .skill-item.popup-tile-mode img
     }
     #contact .mt-12.flex {
         gap: min(0.83vw, 1.48vh) !important;
-    }
-    #contact > .mt-32 {
-        margin-top: min(6.67vw, 11.85vh) !important;
     }
 }
