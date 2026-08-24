@@ -989,4 +989,7 @@ body:not([data-theme="dark"]) #skillPopupContent .skill-item.popup-tile-mode img
     #contact .mt-12.flex {
         gap: min(0.83vw, 1.48vh) !important;
     }
+    #contact > .absolute.bottom-8 {
+        bottom: min(1.67vw, 2.96vh) !important;
+    }
 }
