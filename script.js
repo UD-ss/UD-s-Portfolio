@@ -811,6 +811,28 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('skillOverlay').addEventListener('click', closeSkillPopup);
     document.getElementById('skillClose').addEventListener('click', closeSkillPopup);
 
+    async function initVisitorCounter() {
+        const vcTotal = document.getElementById('vc-total');
+        const vcToday = document.getElementById('vc-today');
+        const vcWrap = document.getElementById('visitor-counter');
+        if (!vcTotal || !vcToday || !vcWrap) return;
+
+        try {
+            await fetch('/api/counter', { method: 'POST', keepalive: true });
+        } catch (e) {}
+
+        try {
+            const r = await fetch('/api/counter');
+            if (r.ok) {
+                const d = await r.json();
+                vcTotal.textContent = d.total || 0;
+                vcToday.textContent = d.today || 0;
+                vcWrap.style.opacity = '1';
+            }
+        } catch (e) {}
+    }
+    initVisitorCounter();
+
     ScrollTrigger.refresh();
     computeSnapTargets();
     updateProgress(0);

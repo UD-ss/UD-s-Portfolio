@@ -2,6 +2,9 @@
     "functions": {
         "api/log.js": {
             "runtime": "nodejs20.x"
+        },
+        "api/counter.js": {
+            "runtime": "nodejs20.x"
         }
     }
 }
