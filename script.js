@@ -817,9 +817,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const vcWrap = document.getElementById('visitor-counter');
         if (!vcTotal || !vcToday || !vcWrap) return;
 
-        try {
-            await fetch('/api/counter', { method: 'POST', keepalive: true });
-        } catch (e) {}
+        if (!sessionStorage.getItem('vc-counted')) {
+            sessionStorage.setItem('vc-counted', '1');
+            try {
+                await fetch('/api/counter', { method: 'POST', keepalive: true });
+            } catch (e) {}
+        }
 
         try {
             const r = await fetch('/api/counter');
