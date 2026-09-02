@@ -19,7 +19,9 @@ module.exports = async (req, res) => {
                 res.status(200).json({ total: 0, today: 0 });
                 return;
             }
-            const r = await fetch(blobs[0].url);
+            const r = await fetch(blobs[0].url, {
+                headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` }
+            });
             const data = await r.json();
             const todayKey = new Date().toISOString().slice(0, 10);
             if (data.date !== todayKey) data.today = 0;
@@ -35,7 +37,9 @@ module.exports = async (req, res) => {
             const { blobs } = await list({ prefix: FILE });
             let data = { total: 0, today: 0, date: '' };
             if (blobs.length) {
-                const r = await fetch(blobs[0].url);
+                const r = await fetch(blobs[0].url, {
+                    headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` }
+                });
                 data = await r.json();
             }
             const todayKey = new Date().toISOString().slice(0, 10);
@@ -45,7 +49,7 @@ module.exports = async (req, res) => {
             }
             data.total = (data.total || 0) + 1;
             data.today = (data.today || 0) + 1;
-            await put(FILE, JSON.stringify(data), { access: 'public', addRandomSuffix: false });
+            await put(FILE, JSON.stringify(data), { access: 'private', addRandomSuffix: false });
             res.status(200).json({ total: data.total, today: data.today });
         } catch (e) {
             res.status(500).json({ error: String(e && e.message || e) });
