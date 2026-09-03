@@ -2,6 +2,6 @@
     "private": true,
     "dependencies": {
         "@vercel/blob": "^2.8.0",
-        "satori": "^0.33.4"
+        "@resvg/resvg-wasm": "^2.6.2"
     }
 }
