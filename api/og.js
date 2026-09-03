@@ -1,3 +1,5 @@
+const sharp = require('sharp');
+
 function escapeXml(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
@@ -37,22 +39,12 @@ module.exports = async (req, res) => {
         const pointColor = '#0055ff';
 
         const svg = buildSvg(bgColor, fgColor, mutedColor, pointColor, title, subtitle, desc);
+        const png = await sharp(Buffer.from(svg)).png().toBuffer();
 
-        try {
-            const { Resvg } = await import('@resvg/resvg-js');
-            const resvg = new Resvg(svg);
-            const pngData = resvg.render();
-            const buffer = pngData.asPng();
-
-            res.setHeader('Content-Type', 'image/png');
-            res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
-            res.status(200).send(buffer);
-        } catch (imgErr) {
-            res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
-            res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
-            res.status(200).send(svg);
-        }
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
+        res.status(200).send(png);
     } catch (e) {
-        res.status(500).json({ error: String(e && e.message || e) });
+        res.status(500).json({ error: String(e && e.message || e), stack: String(e && e.stack || '') });
     }
 };
