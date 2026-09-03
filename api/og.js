@@ -1,20 +1,3 @@
-const fs = require('fs');
-const path = require('path');
-
-let resvgReady = null;
-
-async function getResvg() {
-    if (resvgReady) return resvgReady;
-    resvgReady = (async () => {
-        const wasmPath = path.join(path.dirname(require.resolve('@resvg/resvg-wasm')), 'index_bg.wasm');
-        const wasmBinary = fs.readFileSync(wasmPath);
-        const mod = await import('@resvg/resvg-wasm');
-        await mod.initWasm(wasmBinary);
-        return mod.Resvg;
-    })();
-    return resvgReady;
-}
-
 function escapeXml(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
@@ -55,15 +38,21 @@ module.exports = async (req, res) => {
 
         const svg = buildSvg(bgColor, fgColor, mutedColor, pointColor, title, subtitle, desc);
 
-        const Resvg = await getResvg();
-        const resvg = new Resvg(svg);
-        const pngData = resvg.render();
-        const buffer = pngData.asPng();
+        try {
+            const { Resvg } = await import('@resvg/resvg-js');
+            const resvg = new Resvg(svg);
+            const pngData = resvg.render();
+            const buffer = pngData.asPng();
 
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
-        res.status(200).send(buffer);
+            res.setHeader('Content-Type', 'image/png');
+            res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
+            res.status(200).send(buffer);
+        } catch (imgErr) {
+            res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+            res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
+            res.status(200).send(svg);
+        }
     } catch (e) {
-        res.status(500).json({ error: String(e && e.message || e), stack: String(e && e.stack || '') });
+        res.status(500).json({ error: String(e && e.message || e) });
     }
 };
