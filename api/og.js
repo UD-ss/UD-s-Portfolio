@@ -1,14 +1,25 @@
-const satori = require('satori');
-const sharp = require('sharp');
+const { ImageResponse } = require('@vercel/og');
+const React = require('react');
 
 let cachedFont = null;
 
 async function getFont() {
     if (cachedFont) return cachedFont;
-    const res = await fetch('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/PretendardVariable-DynamicSubset.ttf');
-    if (!res.ok) throw new Error('Font fetch failed: ' + res.status);
-    cachedFont = await res.arrayBuffer();
-    return cachedFont;
+    const urls = [
+        'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/PretendardVariable-DynamicSubset.woff2',
+        'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/PretendardVariable-DynamicSubset.ttf',
+    ];
+    for (const u of urls) {
+        try {
+            const r = await fetch(u);
+            if (!r.ok) continue;
+            const buf = await r.arrayBuffer();
+            if (buf.byteLength < 1000) continue;
+            cachedFont = buf;
+            return cachedFont;
+        } catch {}
+    }
+    throw new Error('No font loaded');
 }
 
 module.exports = async (req, res) => {
@@ -29,69 +40,60 @@ module.exports = async (req, res) => {
 
         const fontData = await getFont();
 
-        const svg = await satori(
-            {
-                type: 'div',
-                props: {
-                    style: {
-                        width: '1200px',
-                        height: '630px',
-                        backgroundColor: bgColor,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        padding: '80px',
-                        fontFamily: 'Pretendard',
-                    },
-                    children: [
-                        {
-                            type: 'div',
-                            props: {
-                                style: { display: 'flex', alignItems: 'baseline', gap: '16px' },
-                                children: [
-                                    { type: 'div', props: { style: { fontSize: '80px', fontWeight: '700', color: fgColor, letterSpacing: '-2px' }, children: title } },
-                                    { type: 'div', props: { style: { fontSize: '28px', color: mutedColor, marginLeft: '16px' }, children: subtitle } },
-                                ]
-                            }
-                        },
-                        {
-                            type: 'div',
-                            props: {
-                                style: { width: '60px', height: '3px', backgroundColor: pointColor, borderRadius: '2px', marginTop: '24px', marginBottom: '24px' }
-                            }
-                        },
-                        {
-                            type: 'div',
-                            props: {
-                                style: { fontSize: '26px', color: mutedColor, lineHeight: '1.5' },
-                                children: desc.length > 30 ? [desc.substring(0, 30), { type: 'br', props: {} }, desc.substring(30, 60)] : desc
-                            }
-                        },
-                        {
-                            type: 'div',
-                            props: {
-                                style: { fontSize: '18px', color: mutedColor, position: 'absolute', bottom: '52px', right: '80px' },
-                                children: 'portfolio.ud-ss.me'
-                            }
-                        },
-                    ]
-                }
-            },
-            {
-                width: 1200,
-                height: 630,
-                fonts: [
-                    { name: 'Pretendard', data: fontData, style: 'normal', weight: '400' },
-                    { name: 'Pretendard', data: fontData, style: 'normal', weight: '700' },
-                ],
+        const descLine1 = desc.length > 30 ? desc.substring(0, 30) : desc;
+        const descLine2 = desc.length > 30 ? desc.substring(30, 60) : '';
+
+        const element = React.createElement('div', {
+            style: {
+                width: '1200px',
+                height: '630px',
+                backgroundColor: bgColor,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                padding: '80px',
+                position: 'relative',
+                fontFamily: 'Pretendard',
             }
+        },
+            React.createElement('div', {
+                style: { display: 'flex', alignItems: 'baseline' }
+            },
+                React.createElement('span', {
+                    style: { fontSize: '80px', fontWeight: 700, color: fgColor, letterSpacing: '-2px' }
+                }, title),
+                React.createElement('span', {
+                    style: { fontSize: '28px', color: mutedColor, marginLeft: '16px' }
+                }, subtitle)
+            ),
+            React.createElement('div', {
+                style: { width: '60px', height: '3px', backgroundColor: pointColor, borderRadius: '2px', marginTop: '24px', marginBottom: '24px' }
+            }),
+            React.createElement('div', {
+                style: { fontSize: '26px', color: mutedColor, lineHeight: '1.5' }
+            }, descLine1),
+            descLine2 ? React.createElement('div', {
+                style: { fontSize: '26px', color: mutedColor, lineHeight: '1.5' }
+            }, descLine2) : null,
+            React.createElement('div', {
+                style: { fontSize: '18px', color: mutedColor, position: 'absolute', bottom: '52px', right: '80px' }
+            }, 'portfolio.ud-ss.me')
         );
 
-        const png = await sharp(Buffer.from(svg)).png().toBuffer();
+        const imageResponse = new ImageResponse(element, {
+            width: 1200,
+            height: 630,
+            fonts: [
+                { name: 'Pretendard', data: fontData, style: 'normal', weight: 400 },
+                { name: 'Pretendard', data: fontData, style: 'normal', weight: 700 },
+            ],
+        });
+
+        const buffer = Buffer.from(await imageResponse.arrayBuffer());
 
         res.setHeader('Content-Type', 'image/png');
         res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
-        res.status(200).send(png);
+        res.status(200).send(buffer);
     } catch (e) {
         res.status(500).json({ error: String(e && e.message || e), stack: String(e && e.stack || '') });
     }
