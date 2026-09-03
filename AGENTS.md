@@ -61,7 +61,7 @@
 - **반드시 정적(static) WOFF 폰트를 써야 함** — 가변(variable) 폰트나 WOFF2는 opentype.js에서 호환성 문제 발생
 - 쿼리 파라미터: `title`, `subtitle`, `desc`, `theme`
 - 캐시: `Cache-Control: public, immutable, no-transform, max-age=31536000`
-- 디자인: 메인 히어로 첫 화면 미니멀 스타일 (중앙 초대형 UD + 디바이더 라인 + 서브타이틀 + 반딧불이 6개 발광 오브 + 노이즈 텍스처)
+- 디자인: 메인 히어로 첫 화면 스타일 (중앙 초대형 UD + 디바이더 라인 + 서브타이틀 + 실제 웹사이트 style.css 6개 대형 확산형 블러 글로우 오브 + 하단 Scroll 인디케이터 + 노이즈 텍스처)
 
 ### 방문자 카운터 (`api/counter.js`)
 - Vercel Blob 저장소(`counter.json`) 사용
