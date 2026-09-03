@@ -1,41 +1,14 @@
+const satori = require('satori');
 const sharp = require('sharp');
-const opentype = require('opentype.js');
-const fs = require('fs');
 
-let fontObj = null;
+let cachedFont = null;
 
 async function getFont() {
-    if (fontObj) return fontObj;
-    const res = await fetch('https://cdn.jsdelivr.net/gh/googlefonts/noto-cjk@main/Sans/SubsetOTF/KR/NotoSansCJKkr-Regular.otf');
-    if (!res.ok) throw new Error('Failed to load font');
-    const buf = Buffer.from(await res.arrayBuffer());
-    fontObj = opentype.parse(buf.buffer);
-    return fontObj;
-}
-
-function measureText(font, text, fontSize) {
-    let width = 0;
-    for (const char of text) {
-        const glyph = font.charToGlyph(char);
-        width += (glyph.advanceWidth || fontSize) * fontSize / font.unitsPerEm;
-    }
-    return width;
-}
-
-function textToPath(font, text, x, y, fontSize) {
-    let pathData = '';
-    let cursorX = x;
-
-    for (const char of text) {
-        const glyph = font.charToGlyph(char);
-        if (glyph && glyph.path && glyph.path.commands.length > 0) {
-            const path = glyph.getPath(cursorX, y, fontSize);
-            pathData += path.toSVG(2).replace(/<\/?svg[^>]*>/g, '');
-        }
-        cursorX += (glyph.advanceWidth || fontSize * 0.5) * fontSize / font.unitsPerEm;
-    }
-
-    return pathData;
+    if (cachedFont) return cachedFont;
+    const res = await fetch('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/PretendardVariable-DynamicSubset.ttf');
+    if (!res.ok) throw new Error('Font fetch failed: ' + res.status);
+    cachedFont = await res.arrayBuffer();
+    return cachedFont;
 }
 
 module.exports = async (req, res) => {
@@ -54,30 +27,65 @@ module.exports = async (req, res) => {
         const mutedColor = isDark ? '#9b968e' : '#8a8378';
         const pointColor = '#0055ff';
 
-        const font = await getFont();
+        const fontData = await getFont();
 
-        const titleW = measureText(font, title, 80);
-        const titlePath = textToPath(font, title, 80, 310, 80);
-        const subtitlePath = textToPath(font, subtitle, 80 + titleW + 16, 310, 28);
-
-        const descLine1 = desc.length > 30 ? desc.substring(0, 30) : desc;
-        const descLine2 = desc.length > 30 ? desc.substring(30, 60) : '';
-        const descPath1 = textToPath(font, descLine1, 80, 395, 26);
-        const descPath2 = descLine2 ? textToPath(font, descLine2, 80, 431, 26) : '';
-
-        const domain = 'portfolio.ud-ss.me';
-        const domainW = measureText(font, domain, 18);
-        const domainPath = textToPath(font, domain, 1120 - domainW, 578, 18);
-
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="${bgColor}"/>
-  <g fill="${fgColor}">${titlePath}</g>
-  <g fill="${mutedColor}">${subtitlePath}</g>
-  <rect x="80" y="340" width="60" height="3" rx="2" fill="${pointColor}"/>
-  <g fill="${mutedColor}">${descPath1}</g>
-  ${descPath2 ? `<g fill="${mutedColor}">${descPath2}</g>` : ''}
-  <g fill="${mutedColor}">${domainPath}</g>
-</svg>`;
+        const svg = await satori(
+            {
+                type: 'div',
+                props: {
+                    style: {
+                        width: '1200px',
+                        height: '630px',
+                        backgroundColor: bgColor,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        padding: '80px',
+                        fontFamily: 'Pretendard',
+                    },
+                    children: [
+                        {
+                            type: 'div',
+                            props: {
+                                style: { display: 'flex', alignItems: 'baseline', gap: '16px' },
+                                children: [
+                                    { type: 'div', props: { style: { fontSize: '80px', fontWeight: '700', color: fgColor, letterSpacing: '-2px' }, children: title } },
+                                    { type: 'div', props: { style: { fontSize: '28px', color: mutedColor, marginLeft: '16px' }, children: subtitle } },
+                                ]
+                            }
+                        },
+                        {
+                            type: 'div',
+                            props: {
+                                style: { width: '60px', height: '3px', backgroundColor: pointColor, borderRadius: '2px', marginTop: '24px', marginBottom: '24px' }
+                            }
+                        },
+                        {
+                            type: 'div',
+                            props: {
+                                style: { fontSize: '26px', color: mutedColor, lineHeight: '1.5' },
+                                children: desc.length > 30 ? [desc.substring(0, 30), { type: 'br', props: {} }, desc.substring(30, 60)] : desc
+                            }
+                        },
+                        {
+                            type: 'div',
+                            props: {
+                                style: { fontSize: '18px', color: mutedColor, position: 'absolute', bottom: '52px', right: '80px' },
+                                children: 'portfolio.ud-ss.me'
+                            }
+                        },
+                    ]
+                }
+            },
+            {
+                width: 1200,
+                height: 630,
+                fonts: [
+                    { name: 'Pretendard', data: fontData, style: 'normal', weight: '400' },
+                    { name: 'Pretendard', data: fontData, style: 'normal', weight: '700' },
+                ],
+            }
+        );
 
         const png = await sharp(Buffer.from(svg)).png().toBuffer();
 
