@@ -3,7 +3,6 @@
     "dependencies": {
         "@vercel/blob": "^2.8.0",
         "sharp": "^0.35.4",
-        "@vercel/og": "^0.1.0",
-        "react": "^19.0.0"
+        "opentype.js": "^2.0.0"
     }
 }
