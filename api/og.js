@@ -1,4 +1,4 @@
-const sharp = require('sharp');
+const { createCanvas, registerFont } = require('canvas');
 const fs = require('fs');
 
 let fontReady = null;
@@ -12,6 +12,9 @@ async function ensureFont() {
                 fs.writeFileSync('/tmp/Pretendard.ttf', Buffer.from(await res.arrayBuffer()));
             }
         }
+        try {
+            registerFont('/tmp/Pretendard.ttf', { family: 'Pretendard' });
+        } catch {}
     })();
     return fontReady;
 }
@@ -33,36 +36,46 @@ module.exports = async (req, res) => {
         const fgColor = isDark ? '#e6e3de' : '#211d18';
         const mutedColor = isDark ? '#9b968e' : '#8a8378';
         const pointColor = '#0055ff';
-        const font = '/tmp/Pretendard.ttf';
 
-        const bgSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
-  <rect width="1200" height="630" fill="${bgColor}"/>
-  <rect x="80" y="340" width="60" height="3" rx="2" fill="${pointColor}"/>
-</svg>`;
+        const W = 1200, H = 630;
+        const canvas = createCanvas(W, H);
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.fillStyle = pointColor;
+        ctx.beginPath();
+        ctx.roundRect(80, 340, 60, 3, 2);
+        ctx.fill();
+
+        ctx.fillStyle = fgColor;
+        ctx.font = 'bold 80px Pretendard, sans-serif';
+        ctx.textBaseline = 'top';
+        ctx.fillText(title, 80, 250);
+
+        const titleWidth = ctx.measureText(title).width;
+        ctx.fillStyle = mutedColor;
+        ctx.font = '28px Pretendard, sans-serif';
+        ctx.fillText(subtitle, 80 + titleWidth + 16, 278);
 
         const descLine1 = desc.length > 30 ? desc.substring(0, 30) : desc;
         const descLine2 = desc.length > 30 ? desc.substring(30, 60) : '';
-
-        const composite = [
-            { text: title, font, fontSize: 80, fontWeight: 'bold', top: 250, left: 80, color: fgColor },
-            { text: subtitle, font, fontSize: 28, top: 280, left: 80 + (title.length * 46), color: mutedColor },
-            { text: descLine1, font, fontSize: 26, top: 380, left: 80, color: mutedColor },
-        ];
-
+        ctx.font = '26px Pretendard, sans-serif';
+        ctx.fillStyle = mutedColor;
+        ctx.fillText(descLine1, 80, 375);
         if (descLine2) {
-            composite.push({ text: descLine2, font, fontSize: 26, top: 416, left: 80, color: mutedColor });
+            ctx.fillText(descLine2, 80, 411);
         }
 
-        composite.push({ text: 'portfolio.ud-ss.me', font, fontSize: 18, top: 560, left: 1040, color: mutedColor });
+        ctx.font = '18px Pretendard, sans-serif';
+        const domainW = ctx.measureText('portfolio.ud-ss.me').width;
+        ctx.fillText('portfolio.ud-ss.me', W - 80 - domainW, 560);
 
-        const png = await sharp(Buffer.from(bgSvg))
-            .composite(composite)
-            .png()
-            .toBuffer();
-
+        const buffer = canvas.toBuffer('image/png');
         res.setHeader('Content-Type', 'image/png');
         res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
-        res.status(200).send(png);
+        res.status(200).send(buffer);
     } catch (e) {
         res.status(500).json({ error: String(e && e.message || e), stack: String(e && e.stack || '') });
     }
