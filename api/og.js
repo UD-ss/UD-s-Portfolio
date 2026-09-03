@@ -1,15 +1,3 @@
-const satori = require('satori');
-
-async function loadFont(url) {
-    try {
-        const res = await fetch(url);
-        if (!res.ok) return null;
-        return Buffer.from(await res.arrayBuffer());
-    } catch {
-        return null;
-    }
-}
-
 module.exports = async (req, res) => {
     try {
         const url = new URL(req.url, `https://${req.headers.host}`);
@@ -26,56 +14,26 @@ module.exports = async (req, res) => {
         const mutedColor = isDark ? '#9b968e' : '#8a8378';
         const pointColor = '#0055ff';
 
-        const fontData = await loadFont(
-            'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/PretendardVariable-DynamicSubset.ttf'
-        );
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="${bgColor}"/>
+  <text x="80" y="300" font-family="sans-serif" font-size="80" font-weight="700" fill="${fgColor}" letter-spacing="-2">${escapeXml(title)}</text>
+  <text x="${80 + title.length * 48}" y="300" font-family="sans-serif" font-size="28" fill="${mutedColor}">  ${escapeXml(subtitle)}</text>
+  <rect x="80" y="330" width="60" height="3" rx="2" fill="${pointColor}"/>
+  <text x="80" y="390" font-family="sans-serif" font-size="26" fill="${mutedColor}">
+    <tspan x="80" dy="0">${escapeXml(desc.substring(0, 30))}</tspan>
+    <tspan x="80" dy="40">${escapeXml(desc.substring(30, 60))}</tspan>
+  </text>
+  <text x="1120" y="570" font-family="sans-serif" font-size="18" fill="${mutedColor}" text-anchor="end" letter-spacing="1">portfolio.ud-ss.me</text>
+</svg>`;
 
-        const svg = await satori(
-            {
-                type: 'div',
-                props: {
-                    style: {
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        padding: '80px',
-                        backgroundColor: bgColor,
-                        color: fgColor,
-                        fontFamily: 'Pretendard, sans-serif',
-                        position: 'relative',
-                    },
-                    children: [
-                        {
-                            type: 'div',
-                            props: {
-                                style: { display: 'flex', alignItems: 'baseline', gap: '16px', marginBottom: '8px' },
-                                children: [
-                                    { type: 'span', props: { style: { fontSize: '80px', fontWeight: '700', letterSpacing: '-2px' }, children: title } },
-                                    { type: 'span', props: { style: { fontSize: '28px', fontWeight: '400', color: mutedColor }, children: subtitle } },
-                                ],
-                            },
-                        },
-                        { type: 'div', props: { style: { width: '60px', height: '3px', backgroundColor: pointColor, marginBottom: '36px', borderRadius: '2px' } } },
-                        { type: 'p', props: { style: { fontSize: '26px', lineHeight: '1.7', color: mutedColor, maxWidth: '800px', margin: 0 }, children: desc } },
-                        { type: 'div', props: { style: { position: 'absolute', bottom: '60px', right: '80px', fontSize: '18px', color: mutedColor, letterSpacing: '1px' }, children: 'portfolio.ud-ss.me' } },
-                    ],
-                },
-            },
-            {
-                width: 1200,
-                height: 630,
-                fonts: fontData
-                    ? [{ name: 'Pretendard', data: fontData, weight: 400, style: 'normal' }]
-                    : [],
-            }
-        );
-
-        res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
         res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
         res.status(200).send(svg);
     } catch (e) {
-        res.status(500).json({ error: String(e && e.message || e), stack: String(e && e.stack || '') });
+        res.status(500).json({ error: String(e && e.message || e) });
     }
 };
+
+function escapeXml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+}
