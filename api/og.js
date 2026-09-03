@@ -5,7 +5,7 @@ let fontObj = null;
 
 async function getFont() {
     if (fontObj) return fontObj;
-    const res = await fetch('https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/Pretendard-Regular.otf');
+    const res = await fetch('https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/woff2/Pretendard-Regular.woff2');
     if (!res.ok) throw new Error('Font fetch failed: ' + res.status);
     const buf = Buffer.from(await res.arrayBuffer());
     fontObj = opentype.parse(buf.buffer);
