@@ -1,58 +1,19 @@
 const sharp = require('sharp');
 const fs = require('fs');
-const path = require('path');
 
 let fontReady = null;
 
 async function ensureFont() {
     if (fontReady) return fontReady;
     fontReady = (async () => {
-        const fontDir = '/tmp/custom-fonts';
-        const fontFile = path.join(fontDir, 'Pretendard.ttf');
-        const confFile = path.join(fontDir, 'fonts.conf');
-
-        if (!fs.existsSync(fontFile)) {
-            fs.mkdirSync(fontDir, { recursive: true });
+        if (!fs.existsSync('/tmp/Pretendard.ttf')) {
             const res = await fetch('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/PretendardVariable-DynamicSubset.ttf');
             if (res.ok) {
-                const buf = Buffer.from(await res.arrayBuffer());
-                fs.writeFileSync(fontFile, buf);
+                fs.writeFileSync('/tmp/Pretendard.ttf', Buffer.from(await res.arrayBuffer()));
             }
         }
-
-        if (!fs.existsSync(confFile)) {
-            fs.writeFileSync(confFile, `<?xml version="1.0"?>
-<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-<fontconfig>
-  <dir>/tmp/custom-fonts</dir>
-</fontconfig>`);
-        }
-
-        process.env.FONTCONFIG_FILE = confFile;
     })();
     return fontReady;
-}
-
-function escapeXml(str) {
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
-function buildSvg(bgColor, fgColor, mutedColor, pointColor, title, subtitle, desc) {
-    const titleWidth = title.length * 46;
-    const descLine1 = desc.length > 30 ? desc.substring(0, 30) : desc;
-    const descLine2 = desc.length > 30 ? desc.substring(30, 60) : '';
-
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="${bgColor}"/>
-  <text x="80" y="300" font-family="Pretendard, sans-serif" font-size="80" font-weight="700" fill="${fgColor}" letter-spacing="-2">${escapeXml(title)}</text>
-  <text x="${80 + titleWidth}" y="300" font-family="Pretendard, sans-serif" font-size="28" fill="${mutedColor}">  ${escapeXml(subtitle)}</text>
-  <rect x="80" y="330" width="60" height="3" rx="2" fill="${pointColor}"/>
-  <text x="80" y="390" font-family="Pretendard, sans-serif" font-size="26" fill="${mutedColor}">
-    <tspan x="80" dy="0">${escapeXml(descLine1)}</tspan>
-    ${descLine2 ? `<tspan x="80" dy="40">${escapeXml(descLine2)}</tspan>` : ''}
-  </text>
-  <text x="1120" y="570" font-family="Pretendard, sans-serif" font-size="18" fill="${mutedColor}" text-anchor="end" letter-spacing="1">portfolio.ud-ss.me</text>
-</svg>`;
 }
 
 module.exports = async (req, res) => {
@@ -72,9 +33,32 @@ module.exports = async (req, res) => {
         const fgColor = isDark ? '#e6e3de' : '#211d18';
         const mutedColor = isDark ? '#9b968e' : '#8a8378';
         const pointColor = '#0055ff';
+        const font = '/tmp/Pretendard.ttf';
 
-        const svg = buildSvg(bgColor, fgColor, mutedColor, pointColor, title, subtitle, desc);
-        const png = await sharp(Buffer.from(svg)).png().toBuffer();
+        const bgSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
+  <rect width="1200" height="630" fill="${bgColor}"/>
+  <rect x="80" y="340" width="60" height="3" rx="2" fill="${pointColor}"/>
+</svg>`;
+
+        const descLine1 = desc.length > 30 ? desc.substring(0, 30) : desc;
+        const descLine2 = desc.length > 30 ? desc.substring(30, 60) : '';
+
+        const composite = [
+            { text: title, font, fontSize: 80, fontWeight: 'bold', top: 250, left: 80, color: fgColor },
+            { text: subtitle, font, fontSize: 28, top: 280, left: 80 + (title.length * 46), color: mutedColor },
+            { text: descLine1, font, fontSize: 26, top: 380, left: 80, color: mutedColor },
+        ];
+
+        if (descLine2) {
+            composite.push({ text: descLine2, font, fontSize: 26, top: 416, left: 80, color: mutedColor });
+        }
+
+        composite.push({ text: 'portfolio.ud-ss.me', font, fontSize: 18, top: 560, left: 1040, color: mutedColor });
+
+        const png = await sharp(Buffer.from(bgSvg))
+            .composite(composite)
+            .png()
+            .toBuffer();
 
         res.setHeader('Content-Type', 'image/png');
         res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
