@@ -1,28 +1,42 @@
-const { createCanvas, registerFont } = require('canvas');
+const sharp = require('sharp');
+const opentype = require('opentype.js');
 const fs = require('fs');
 
-let fontReady = null;
+let fontBuffer = null;
 
-async function ensureFont() {
-    if (fontReady) return fontReady;
-    fontReady = (async () => {
-        if (!fs.existsSync('/tmp/Pretendard.ttf')) {
-            const res = await fetch('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/PretendardVariable-DynamicSubset.ttf');
-            if (res.ok) {
-                fs.writeFileSync('/tmp/Pretendard.ttf', Buffer.from(await res.arrayBuffer()));
-            }
+async function getFont() {
+    if (fontBuffer) return fontBuffer;
+    const res = await fetch('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/PretendardVariable-DynamicSubset.ttf');
+    if (!res.ok) throw new Error('Failed to load font');
+    fontBuffer = Buffer.from(await res.arrayBuffer());
+    return fontBuffer;
+}
+
+function textToPath(font, text, x, y, fontSize, fontWeight) {
+    const weight = fontWeight === 'bold' ? 700 : 400;
+    let pathData = '';
+    let cursorX = x;
+
+    for (const char of text) {
+        const glyph = font.charToGlyph(char);
+        if (glyph && glyph.path) {
+            const path = glyph.getPath(cursorX, y, fontSize);
+            pathData += path.toSVG(2).replace(/<\/?svg[^>]*>/g, '');
+            cursorX += glyph.advanceWidth * fontSize / font.unitsPerEm;
+        } else {
+            cursorX += fontSize * 0.5;
         }
-        try {
-            registerFont('/tmp/Pretendard.ttf', { family: 'Pretendard' });
-        } catch {}
-    })();
-    return fontReady;
+    }
+
+    return `<path d="${pathData}" fill="currentColor"/>`;
+}
+
+function escapeXml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 module.exports = async (req, res) => {
     try {
-        await ensureFont();
-
         const url = new URL(req.url, `https://${req.headers.host}`);
         const sp = url.searchParams;
 
@@ -37,45 +51,37 @@ module.exports = async (req, res) => {
         const mutedColor = isDark ? '#9b968e' : '#8a8378';
         const pointColor = '#0055ff';
 
-        const W = 1200, H = 630;
-        const canvas = createCanvas(W, H);
-        const ctx = canvas.getContext('2d');
+        const fontData = await getFont();
+        const font = opentype.parse(fontData.buffer);
 
-        ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, W, H);
-
-        ctx.fillStyle = pointColor;
-        ctx.beginPath();
-        ctx.roundRect(80, 340, 60, 3, 2);
-        ctx.fill();
-
-        ctx.fillStyle = fgColor;
-        ctx.font = 'bold 80px Pretendard, sans-serif';
-        ctx.textBaseline = 'top';
-        ctx.fillText(title, 80, 250);
-
-        const titleWidth = ctx.measureText(title).width;
-        ctx.fillStyle = mutedColor;
-        ctx.font = '28px Pretendard, sans-serif';
-        ctx.fillText(subtitle, 80 + titleWidth + 16, 278);
+        const titlePath = textToPath(font, title, 80, 310, 80, 'bold');
+        const titleWidth = font.getAdvanceWidth(title, 80, { fontSize: 80, fontFamily: 'Pretendard' });
+        const subtitlePath = textToPath(font, subtitle, 80 + titleWidth + 16, 310, 28, 'normal');
 
         const descLine1 = desc.length > 30 ? desc.substring(0, 30) : desc;
         const descLine2 = desc.length > 30 ? desc.substring(30, 60) : '';
-        ctx.font = '26px Pretendard, sans-serif';
-        ctx.fillStyle = mutedColor;
-        ctx.fillText(descLine1, 80, 375);
-        if (descLine2) {
-            ctx.fillText(descLine2, 80, 411);
-        }
+        const descPath1 = textToPath(font, descLine1, 80, 395, 26, 'normal');
+        const descPath2 = descLine2 ? textToPath(font, descLine2, 80, 431, 26, 'normal') : '';
 
-        ctx.font = '18px Pretendard, sans-serif';
-        const domainW = ctx.measureText('portfolio.ud-ss.me').width;
-        ctx.fillText('portfolio.ud-ss.me', W - 80 - domainW, 560);
+        const domain = 'portfolio.ud-ss.me';
+        const domainWidth = font.getAdvanceWidth(domain, 0, { fontSize: 18, fontFamily: 'Pretendard' });
+        const domainPath = textToPath(font, domain, 1120 - domainWidth, 578, 18, 'normal');
 
-        const buffer = canvas.toBuffer('image/png');
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="${bgColor}"/>
+  <g fill="${fgColor}">${titlePath}</g>
+  <g fill="${mutedColor}">${subtitlePath}</g>
+  <rect x="80" y="340" width="60" height="3" rx="2" fill="${pointColor}"/>
+  <g fill="${mutedColor}">${descPath1}</g>
+  ${descPath2 ? `<g fill="${mutedColor}">${descPath2}</g>` : ''}
+  <g fill="${mutedColor}">${domainPath}</g>
+</svg>`;
+
+        const png = await sharp(Buffer.from(svg)).png().toBuffer();
+
         res.setHeader('Content-Type', 'image/png');
         res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
-        res.status(200).send(buffer);
+        res.status(200).send(png);
     } catch (e) {
         res.status(500).json({ error: String(e && e.message || e), stack: String(e && e.stack || '') });
     }
