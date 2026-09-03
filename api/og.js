@@ -109,7 +109,7 @@ module.exports = async (req, res) => {
   <rect x="60" y="170" width="520" height="300" rx="12" fill="${cardBg}" stroke="${borderColor}" stroke-width="1"/>
 
   <g transform="translate(100, 230)">
-    <g fill="${pointColor}">${titleP}</g>
+    <g fill="${fgColor}">${titleP}</g>
   </g>
   <g transform="translate(${100 + titleW + 14}, 230)">
     <g fill="${mutedColor}">${subtitleP}</g>
