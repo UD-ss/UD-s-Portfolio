@@ -70,13 +70,13 @@ module.exports = async (req, res) => {
         const theme = sp.get('theme') || 'dark';
 
         const isDark = theme === 'dark';
-        const bgColor = isDark ? '#141518' : '#ece7dd';
-        const bgColor2 = isDark ? '#1c1e22' : '#e2dbcf';
-        const fgColor = isDark ? '#f4f2ee' : '#1f1c18';
-        const mutedColor = isDark ? '#9e9990' : '#888176';
+        const bgColor = isDark ? '#1c1e20' : '#ece7dd';
+        const bgColor2 = isDark ? '#242629' : '#e3ddd3';
+        const fgColor = isDark ? '#e6e3de' : '#211d18';
+        const mutedColor = isDark ? '#9b968e' : '#8a8378';
         const borderColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
         const pointColor = isDark ? '#3b82f6' : '#0055ff';
-        const cardBg = isDark ? 'rgba(26,28,32,0.72)' : 'rgba(255,253,249,0.75)';
+        const cardBg = isDark ? 'rgba(36,38,41,0.72)' : 'rgba(255,253,249,0.75)';
         const pillBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)';
         const glowColor = isDark ? 'rgba(59,130,246,0.14)' : 'rgba(0,85,255,0.08)';
 
