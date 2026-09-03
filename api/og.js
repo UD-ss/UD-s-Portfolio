@@ -2,37 +2,40 @@ const sharp = require('sharp');
 const opentype = require('opentype.js');
 const fs = require('fs');
 
-let fontBuffer = null;
+let fontObj = null;
 
 async function getFont() {
-    if (fontBuffer) return fontBuffer;
-    const res = await fetch('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/PretendardVariable-DynamicSubset.ttf');
+    if (fontObj) return fontObj;
+    const res = await fetch('https://cdn.jsdelivr.net/gh/googlefonts/noto-cjk@main/Sans/SubsetOTF/KR/NotoSansCJKkr-Regular.otf');
     if (!res.ok) throw new Error('Failed to load font');
-    fontBuffer = Buffer.from(await res.arrayBuffer());
-    return fontBuffer;
+    const buf = Buffer.from(await res.arrayBuffer());
+    fontObj = opentype.parse(buf.buffer);
+    return fontObj;
 }
 
-function textToPath(font, text, x, y, fontSize, fontWeight) {
-    const weight = fontWeight === 'bold' ? 700 : 400;
+function measureText(font, text, fontSize) {
+    let width = 0;
+    for (const char of text) {
+        const glyph = font.charToGlyph(char);
+        width += (glyph.advanceWidth || fontSize) * fontSize / font.unitsPerEm;
+    }
+    return width;
+}
+
+function textToPath(font, text, x, y, fontSize) {
     let pathData = '';
     let cursorX = x;
 
     for (const char of text) {
         const glyph = font.charToGlyph(char);
-        if (glyph && glyph.path) {
+        if (glyph && glyph.path && glyph.path.commands.length > 0) {
             const path = glyph.getPath(cursorX, y, fontSize);
             pathData += path.toSVG(2).replace(/<\/?svg[^>]*>/g, '');
-            cursorX += glyph.advanceWidth * fontSize / font.unitsPerEm;
-        } else {
-            cursorX += fontSize * 0.5;
         }
+        cursorX += (glyph.advanceWidth || fontSize * 0.5) * fontSize / font.unitsPerEm;
     }
 
-    return `<path d="${pathData}" fill="currentColor"/>`;
-}
-
-function escapeXml(str) {
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return pathData;
 }
 
 module.exports = async (req, res) => {
@@ -51,21 +54,20 @@ module.exports = async (req, res) => {
         const mutedColor = isDark ? '#9b968e' : '#8a8378';
         const pointColor = '#0055ff';
 
-        const fontData = await getFont();
-        const font = opentype.parse(fontData.buffer);
+        const font = await getFont();
 
-        const titlePath = textToPath(font, title, 80, 310, 80, 'bold');
-        const titleWidth = font.getAdvanceWidth(title, 80, { fontSize: 80, fontFamily: 'Pretendard' });
-        const subtitlePath = textToPath(font, subtitle, 80 + titleWidth + 16, 310, 28, 'normal');
+        const titleW = measureText(font, title, 80);
+        const titlePath = textToPath(font, title, 80, 310, 80);
+        const subtitlePath = textToPath(font, subtitle, 80 + titleW + 16, 310, 28);
 
         const descLine1 = desc.length > 30 ? desc.substring(0, 30) : desc;
         const descLine2 = desc.length > 30 ? desc.substring(30, 60) : '';
-        const descPath1 = textToPath(font, descLine1, 80, 395, 26, 'normal');
-        const descPath2 = descLine2 ? textToPath(font, descLine2, 80, 431, 26, 'normal') : '';
+        const descPath1 = textToPath(font, descLine1, 80, 395, 26);
+        const descPath2 = descLine2 ? textToPath(font, descLine2, 80, 431, 26) : '';
 
         const domain = 'portfolio.ud-ss.me';
-        const domainWidth = font.getAdvanceWidth(domain, 0, { fontSize: 18, fontFamily: 'Pretendard' });
-        const domainPath = textToPath(font, domain, 1120 - domainWidth, 578, 18, 'normal');
+        const domainW = measureText(font, domain, 18);
+        const domainPath = textToPath(font, domain, 1120 - domainW, 578, 18);
 
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="${bgColor}"/>
