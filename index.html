@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>UD | Portfolio</title>
 
     <meta property="og:type" content="website">
@@ -93,8 +93,31 @@
 
                 <svg class="w-4 h-4 theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
             </button>
+            <button id="hamburger" class="hidden md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 cursor-hover-target" aria-label="Menu">
+                <span class="hamburger-line w-5 h-[1.5px] bg-current transition-all duration-300"></span>
+                <span class="hamburger-line w-5 h-[1.5px] bg-current transition-all duration-300"></span>
+                <span class="hamburger-line w-5 h-[1.5px] bg-current transition-all duration-300"></span>
+            </button>
         </div>
     </nav>
+
+    <div id="mobile-drawer" class="fixed inset-0 z-[200] pointer-events-none">
+        <div id="drawer-overlay" class="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+        <div id="drawer-panel" class="absolute right-0 top-0 h-full w-72 bg-[var(--bg)] border-l border-[var(--border)] p-8 pt-24 flex flex-col gap-6 translate-x-full transition-transform duration-300">
+            <a href="#hero" class="drawer-link text-lg font-display font-semibold tracking-wide">Home</a>
+            <a href="#about" class="drawer-link text-lg font-display font-semibold tracking-wide">About</a>
+            <a href="#skills" class="drawer-link text-lg font-display font-semibold tracking-wide">Skills</a>
+            <a href="#projects" class="drawer-link text-lg font-display font-semibold tracking-wide">Projects</a>
+            <a href="#contact" class="drawer-link text-lg font-display font-semibold tracking-wide">Contact</a>
+            <div class="mt-auto pt-6 border-t border-[var(--border)]">
+                <button id="drawer-theme-toggle" class="flex items-center gap-3 text-sm text-[var(--muted)] cursor-hover-target" aria-label="Toggle theme">
+                    <svg class="w-4 h-4 theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+                    <svg class="w-4 h-4 theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+                    <span>Theme</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
 
     <div id="progress-rail" aria-hidden="true">

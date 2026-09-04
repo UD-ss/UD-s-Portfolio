@@ -518,6 +518,39 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
+    const hamburger = document.getElementById('hamburger');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const drawerOverlay = document.getElementById('drawer-overlay');
+    const drawerThemeToggle = document.getElementById('drawer-theme-toggle');
+
+    function closeDrawer() {
+        hamburger.classList.remove('is-open');
+        mobileDrawer.classList.remove('is-open');
+    }
+
+    hamburger.addEventListener('click', () => {
+        const isOpen = hamburger.classList.toggle('is-open');
+        mobileDrawer.classList.toggle('is-open', isOpen);
+    });
+
+    drawerOverlay.addEventListener('click', closeDrawer);
+
+    mobileDrawer.querySelectorAll('.drawer-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeDrawer();
+            const href = link.getAttribute('href');
+            if (navStepMap.hasOwnProperty(href)) {
+                setTimeout(() => goToStep(navStepMap[href]), 100);
+            }
+        });
+    });
+
+    drawerThemeToggle.addEventListener('click', () => {
+        document.getElementById('theme-toggle').click();
+    });
+
+
     lenis.on('scroll', ({ scroll }) => {
         if (!isLocked) {
             const targets = getSnapTargets();
@@ -601,7 +634,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${slotsHTML}
             `;
 
-            const finalW = Math.min(window.innerWidth * 0.45, window.innerHeight * 0.75, 960);
+            const isMobile = window.innerWidth < 768;
+            const finalW = isMobile
+                ? Math.min(window.innerWidth * 0.92, 400)
+                : Math.min(window.innerWidth * 0.45, window.innerHeight * 0.75, 960);
             gsap.set(popup, {
                 visibility: 'visible',
                 left: 0,
@@ -618,7 +654,7 @@ document.addEventListener("DOMContentLoaded", () => {
             skillPopupOpen = true;
             lenis.stop();
 
-            const finalH = Math.min(popup.offsetHeight, window.innerHeight * 0.8);
+            const finalH = Math.min(popup.offsetHeight, window.innerHeight * (isMobile ? 0.85 : 0.8));
             const slots = Array.from(popupContent.querySelectorAll('.popup-slot'));
             const gridPositions = slots.map(el => ({
                 x: el.offsetLeft,

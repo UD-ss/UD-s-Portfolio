@@ -45,6 +45,35 @@ h2[class*="tracking-[0.3em]"] {
 }
 @media (max-width: 767px) {
     #progress-rail { display: none; }
+
+    .firefly { transform: scale(0.35); filter: blur(40px) !important; }
+    [data-theme="dark"] .firefly { filter: blur(45px) !important; }
+
+    #hero { padding: 0 1rem !important; }
+    #hero-name { font-size: clamp(52px, 18vw, 80px) !important; }
+    #about { padding: 4rem 1rem !important; }
+    #skills { padding: 4rem 1rem !important; }
+    #more-projects { padding: 4rem 1rem !important; }
+    #contact { padding: 4rem 1rem !important; }
+    #contact a[href^="mailto:"] .magnetic-inner { font-size: clamp(1.25rem, 5vw, 1.75rem) !important; }
+
+    #hamburger.is-open .hamburger-line:nth-child(1) {
+        transform: translateY(4.5px) rotate(45deg);
+    }
+    #hamburger.is-open .hamburger-line:nth-child(2) {
+        opacity: 0;
+    }
+    #hamburger.is-open .hamburger-line:nth-child(3) {
+        transform: translateY(-4.5px) rotate(-45deg);
+    }
+    #mobile-drawer.is-open { pointer-events: auto; }
+    #mobile-drawer.is-open #drawer-overlay { opacity: 1; }
+    #mobile-drawer.is-open #drawer-panel { transform: translateX(0); }
+    .drawer-link {
+        color: var(--fg);
+        transition: color 0.2s ease;
+    }
+    .drawer-link:hover { color: var(--point); }
 }
 #about-content blockquote {
     font-size: clamp(30px, min(4.5vw, 5.5vh), 56px) !important;
@@ -120,6 +149,7 @@ body {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    touch-action: manipulation;
     transition: background-color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
                 color 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -872,6 +902,35 @@ body:not([data-theme="dark"]) #skillPopupContent .skill-item.popup-tile-mode img
 ::selection {
     background: var(--point);
     color: #ffffff;
+}
+
+@media (max-width: 767px) {
+    .popup-grid { grid-template-columns: repeat(2, 1fr); }
+    .skill-card-popup { padding: 1rem !important; }
+    #skillPopupContent .skill-item.popup-tile-mode .skill-logo,
+    #skillPopupContent .skill-item.popup-tile-mode > svg {
+        width: clamp(2rem, 8vw, 3rem) !important;
+        height: clamp(2rem, 8vw, 3rem) !important;
+    }
+    #skillPopupContent .skill-item.popup-tile-mode svg[data-lucide],
+    #skillPopupContent .skill-item.popup-tile-mode > span > svg {
+        width: clamp(1.75rem, 7vw, 2.75rem) !important;
+        height: clamp(1.75rem, 7vw, 2.75rem) !important;
+    }
+    .project-hover-label {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+    .project-list-item .project-list-bg {
+        transform: scaleX(1) !important;
+    }
+}
+
+@media (hover: none) {
+    .project-hover-label {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
 }
 
 
