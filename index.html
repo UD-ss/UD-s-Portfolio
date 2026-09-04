@@ -455,12 +455,13 @@
         if (!c) return;
         list.forEach(function(p, i) {
             var isLast = i === list.length - 1;
-            c.innerHTML += '<a href="' + escAttr(p.link || '#') + '" class="project-list-item group cursor-hover-target block py-10 border-t ' + (isLast ? 'border-b' : '') + ' border-border-light relative overflow-hidden transition-colors duration-500"><div class="project-list-bg"></div><div class="flex items-center justify-between relative z-10"><div><h3 class="text-2xl md:text-4xl font-display font-semibold mb-2 transition-transform duration-500 group-hover:translate-x-4 tracking-tight">' + escHtml(p.title) + '</h3><p class="text-sm text-muted-light font-light transition-all duration-500 group-hover:translate-x-4">' + escHtml(p.description) + '</p></div><div class="flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><span class="text-xs uppercase tracking-widest text-muted-light hidden md:inline">' + escHtml(p.tech || '') + '</span><i data-lucide="arrow-up-right" class="w-5 h-5"></i></div></div></a>';
+            c.innerHTML += '<a href="' + escAttr(safeLink(p.link)) + '" class="project-list-item group cursor-hover-target block py-10 border-t ' + (isLast ? 'border-b' : '') + ' border-border-light relative overflow-hidden transition-colors duration-500"><div class="project-list-bg"></div><div class="flex items-center justify-between relative z-10"><div><h3 class="text-2xl md:text-4xl font-display font-semibold mb-2 transition-transform duration-500 group-hover:translate-x-4 tracking-tight">' + escHtml(p.title) + '</h3><p class="text-sm text-muted-light font-light transition-all duration-500 group-hover:translate-x-4">' + escHtml(p.description) + '</p></div><div class="flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><span class="text-xs uppercase tracking-widest text-muted-light hidden md:inline">' + escHtml(p.tech || '') + '</span><i data-lucide="arrow-up-right" class="w-5 h-5"></i></div></div></a>';
         });
     }
 
     function escHtml(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
     function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function safeLink(url) { if (!url) return '#'; if (/^(javascript|data|vbscript):/i.test(url)) return '#'; return url; }
     </script>
 </body>
 </html>

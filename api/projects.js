@@ -2,12 +2,58 @@ const { list, put } = require('@vercel/blob');
 
 function jsonRes(res, status, data) { res.status(status).json(data); }
 function setCors(res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', 'https://portfolio.ud-ss.me');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
 const SESSION_TTL = 24 * 60 * 60 * 1000;
+const DANGEROUS_SCHEMES = /^(javascript|data|vbscript):/i;
+
+function sanitizeStr(s, maxLen) {
+    if (typeof s !== 'string') return '';
+    s = s.replace(/<[^>]*>/g, '').trim();
+    return s.slice(0, maxLen || 500);
+}
+
+function sanitizeLink(url) {
+    if (typeof url !== 'string') return '';
+    url = url.trim();
+    if (!url) return '';
+    if (DANGEROUS_SCHEMES.test(url)) return '';
+    return url.slice(0, 2000);
+}
+
+function validateProjects(body) {
+    if (!body || typeof body !== 'object') return null;
+    if (!Array.isArray(body.highlighted) || !Array.isArray(body.more)) return null;
+
+    body.highlighted = body.highlighted.map(function(p) {
+        if (!p || typeof p !== 'object') return null;
+        return {
+            id: sanitizeStr(p.id, 100),
+            title: sanitizeStr(p.title, 200),
+            description: sanitizeStr(p.description, 1000),
+            tags: Array.isArray(p.tags) ? p.tags.slice(0, 10).map(function(t) { return sanitizeStr(t, 50); }) : [],
+            image: sanitizeLink(p.image),
+            link: sanitizeLink(p.link),
+            placeholder: !!p.placeholder
+        };
+    }).filter(Boolean);
+
+    body.more = body.more.map(function(p) {
+        if (!p || typeof p !== 'object') return null;
+        return {
+            id: sanitizeStr(p.id, 100),
+            title: sanitizeStr(p.title, 200),
+            description: sanitizeStr(p.description, 1000),
+            tech: sanitizeStr(p.tech, 200),
+            link: sanitizeLink(p.link)
+        };
+    }).filter(Boolean);
+
+    return body;
+}
 
 async function readSession(token) {
     if (!token) return null;
@@ -77,7 +123,10 @@ module.exports = async (req, res) => {
             if (!body.highlighted || !Array.isArray(body.highlighted)) return jsonRes(res, 400, { error: 'highlighted array required' });
             if (!body.more || !Array.isArray(body.more)) return jsonRes(res, 400, { error: 'more array required' });
 
-            await writeProjects(body);
+            const validated = validateProjects(body);
+            if (!validated) return jsonRes(res, 400, { error: 'Invalid project data' });
+
+            await writeProjects(validated);
             return jsonRes(res, 200, { ok: true });
         }
 

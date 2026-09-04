@@ -6,7 +6,7 @@ const ALLOWED_EXT = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
 
 function jsonRes(res, status, data) { res.status(status).json(data); }
 function setCors(res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', 'https://portfolio.ud-ss.me');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }

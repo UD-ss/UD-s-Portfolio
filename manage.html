@@ -233,7 +233,7 @@
             card.dataset.id = p.id;
 
             const preview = p.image
-                ? `<img src="${p.image}" class="w-16 h-12 object-cover rounded-md flex-shrink-0">`
+                ? `<img src="${esc(p.image)}" class="w-16 h-12 object-cover rounded-md flex-shrink-0">`
                 : `<div class="w-16 h-12 rounded-md flex-shrink-0 flex items-center justify-center text-muted text-xs" style="background:#1c1e20;">없음</div>`;
 
             const isEditing = editingId === 'h-' + i;
@@ -244,10 +244,10 @@
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2">
                             <span class="text-muted text-xs">${i + 1}</span>
-                            <h3 class="text-fg text-sm font-medium truncate">${p.title || '제목 없음'}</h3>
+                            <h3 class="text-fg text-sm font-medium truncate">${esc(p.title) || '제목 없음'}</h3>
                             ${p.placeholder ? '<span class="text-xs px-2 py-0.5 rounded-full" style="background:#3b82f620;color:#3b82f6;">Coming Soon</span>' : ''}
                         </div>
-                        <p class="text-muted text-xs truncate mt-0.5">${p.description || '설명 없음'}</p>
+                        <p class="text-muted text-xs truncate mt-0.5">${esc(p.description) || '설명 없음'}</p>
                     </div>
                     <div class="flex items-center gap-1 flex-shrink-0" onclick="event.stopPropagation()">
                         <button data-action="edit" data-index="${i}" class="p-1.5 rounded-md text-muted hover:text-fg hover:bg-bg transition-colors" title="편집">
@@ -441,10 +441,10 @@
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2">
                             <span class="text-muted text-xs">${i + 1}</span>
-                            <h3 class="text-fg text-sm font-medium truncate">${p.title || '제목 없음'}</h3>
+                            <h3 class="text-fg text-sm font-medium truncate">${esc(p.title) || '제목 없음'}</h3>
                         </div>
-                        <p class="text-muted text-xs truncate mt-0.5">${p.description || '설명 없음'}</p>
-                        ${p.tech ? `<p class="text-muted text-xs mt-1" style="color:#3b82f6;">${p.tech}</p>` : ''}
+                        <p class="text-muted text-xs truncate mt-0.5">${esc(p.description) || '설명 없음'}</p>
+                        ${p.tech ? `<p class="text-muted text-xs mt-1" style="color:#3b82f6;">${esc(p.tech)}</p>` : ''}
                     </div>
                     <div class="flex items-center gap-1 flex-shrink-0" onclick="event.stopPropagation()">
                         <button data-action="edit" data-index="${i}" class="p-1.5 rounded-md text-muted hover:text-fg hover:bg-bg transition-colors" title="편집">
@@ -673,8 +673,10 @@
 
     $('#btn-generate-secret').addEventListener('click', () => {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+        const randomValues = new Uint8Array(32);
+        crypto.getRandomValues(randomValues);
         let secret = '';
-        for (let i = 0; i < 32; i++) secret += chars[Math.floor(Math.random() * chars.length)];
+        for (let i = 0; i < 32; i++) secret += chars[randomValues[i] % chars.length];
         const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?data=otpauth://totp/Portfolio:admin?secret=' + secret + '&issuer=Portfolio&algorithm=SHA1&digits=6&period=30&size=200x200';
         $('#qr-code').src = qrUrl;
         $('#secret-text').textContent = secret;
