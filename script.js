@@ -15,13 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
         touchMultiplier: 2,
     });
 
-    function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-
     gsap.registerPlugin(ScrollTrigger);
 
     lenis.on('scroll', ScrollTrigger.update);

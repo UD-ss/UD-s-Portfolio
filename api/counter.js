@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
             }
             data.total = (data.total || 0) + 1;
             data.today = (data.today || 0) + 1;
-            await put(FILE, JSON.stringify(data), { access: 'private', addRandomSuffix: false });
+            await put(FILE, JSON.stringify(data), { access: 'private', addRandomSuffix: false, allowOverwrite: true });
             res.status(200).json({ total: data.total, today: data.today });
         } catch (e) {
             res.status(500).json({ error: String(e && e.message || e) });
