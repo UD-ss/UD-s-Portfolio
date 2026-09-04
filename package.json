@@ -2,7 +2,8 @@
     "private": true,
     "dependencies": {
         "@vercel/blob": "^2.8.0",
-        "sharp": "^0.35.4",
-        "opentype.js": "^2.0.0"
+        "opentype.js": "^2.0.0",
+        "otpauth": "^9.5.2",
+        "sharp": "^0.35.4"
     }
 }

@@ -1,0 +1,59 @@
+{
+  "highlighted": [
+    {
+      "id": "ud-space",
+      "title": "UD's Space",
+      "description": "Node.js 기반 봇 클러스터 및 Supabase 연동 커뮤니티",
+      "tags": ["Node.js", "Discord.js", "Supabase"],
+      "image": "ud-space.png",
+      "link": ""
+    },
+    {
+      "id": "manga-translate",
+      "title": "Manga-Translate",
+      "description": "YOLOv8, Manga-OCR, LaMa Inpainting, 로컬 LLM 및 React Konva를 결합하여 이미지 내 텍스트를 실시간 감지·제거·번역·편집할 수 있는 풀스택 플랫폼.",
+      "tags": ["React 19", "FastAPI", "YOLOv8", "PyTorch"],
+      "image": "manga-translate.png",
+      "link": ""
+    },
+    {
+      "id": "coming-soon",
+      "title": "???",
+      "description": "곧 공개 예정인 프로젝트입니다.",
+      "tags": ["TBA"],
+      "image": "",
+      "link": "",
+      "placeholder": true
+    }
+  ],
+  "more": [
+    {
+      "id": "auto-illust-sorter",
+      "title": "Automatic Illustration Sorter",
+      "description": "ONNX 듀얼 AI 캐스케이드 및 pHash 초고속 이미지 정렬",
+      "tech": "Python · ONNX",
+      "link": ""
+    },
+    {
+      "id": "autoillust",
+      "title": "AutoIllust",
+      "description": "로컬 LLM 자연어 쿼리 기반 멀티 플랫폼 이미지 수집 풀스택",
+      "tech": "Ollama · FastAPI",
+      "link": ""
+    },
+    {
+      "id": "auto-dl",
+      "title": "Auto-DL",
+      "description": "Chrome MV3 File System Access API 기반 미디어 수집 확장 프로그램",
+      "tech": "JS (MV3)",
+      "link": ""
+    },
+    {
+      "id": "studio-diffusion",
+      "title": "Studio Diffusion & LoRA Trainer",
+      "description": "HuggingFace Diffusers SDXL/Pony WebGUI 및 LoRA 학습 파이프라인",
+      "tech": "PyTorch",
+      "link": ""
+    }
+  ]
+}

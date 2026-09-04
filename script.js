@@ -213,20 +213,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const projectsSection = document.getElementById('projects');
     const horizonTrack = document.querySelector('.horizontal-scroll');
     let projectStepHandler = null;
+    let playing = false;
+    let autoPlayed = false;
+    let existingDragHandler = null;
+    let existingMoveHandler = null;
+    let existingUpHandler = null;
+    let existingCancelHandler = null;
 
-    if (projectsSection && horizonTrack) {
+    function initProjects() {
+        const ps = document.getElementById('projects');
+        const ht = document.querySelector('.horizontal-scroll');
+        if (!ps || !ht) return;
+
+        const oldST = ScrollTrigger.getById('horizontal-pin');
+        if (oldST) oldST.kill();
+
+        if (existingDragHandler) ht.removeEventListener('pointerdown', existingDragHandler);
+        if (existingMoveHandler) ht.removeEventListener('pointermove', existingMoveHandler);
+        if (existingUpHandler) ht.removeEventListener('pointerup', existingUpHandler);
+        if (existingCancelHandler) ht.removeEventListener('pointercancel', existingCancelHandler);
+
+        playing = false;
+        autoPlayed = false;
+
         const panelStepX = () => {
             const margin = window.innerWidth >= 768 ? 100 : 24;
-            const panels = Array.from(horizonTrack.querySelectorAll('.panel'));
+            const panels = Array.from(ht.querySelectorAll('.panel'));
             return panels.map((p) => margin - p.offsetLeft);
         };
         const minX = () => Math.min(0, ...panelStepX());
 
-        let playing = false;
-        let autoPlayed = false;
-
         ScrollTrigger.create({
-            trigger: projectsSection,
+            trigger: ps,
             start: "top top",
             end: "+=100%",
             pin: true,
@@ -238,9 +256,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (steps.length < 3) return;
                 playing = true;
                 gsap.timeline({ onComplete: () => { playing = false; } })
-                    .to(horizonTrack, { x: steps[1], duration: 1.1, ease: "power3.inOut" })
-                    .to(horizonTrack, { x: steps[2], duration: 1.1, ease: "power3.inOut" })
-                    .to(horizonTrack, { x: steps[0], duration: 1.2, ease: "power3.inOut" });
+                    .to(ht, { x: steps[1], duration: 1.1, ease: "power3.inOut" })
+                    .to(ht, { x: steps[2], duration: 1.1, ease: "power3.inOut" })
+                    .to(ht, { x: steps[0], duration: 1.2, ease: "power3.inOut" });
             }
         });
 
@@ -248,44 +266,49 @@ document.addEventListener("DOMContentLoaded", () => {
         let dragStartClientX = 0;
         let dragBaseX = 0;
 
-        horizonTrack.addEventListener('pointerdown', (e) => {
+        existingDragHandler = (e) => {
             if (playing) return;
             isDragging = true;
             dragStartClientX = e.clientX;
-            dragBaseX = gsap.getProperty(horizonTrack, 'x');
-            horizonTrack.setPointerCapture(e.pointerId);
-            horizonTrack.classList.add('is-dragging');
-            gsap.killTweensOf(horizonTrack);
-        });
+            dragBaseX = gsap.getProperty(ht, 'x');
+            ht.setPointerCapture(e.pointerId);
+            ht.classList.add('is-dragging');
+            gsap.killTweensOf(ht);
+        };
 
-        horizonTrack.addEventListener('pointermove', (e) => {
+        existingMoveHandler = (e) => {
             if (!isDragging) return;
             const next = Math.max(Math.min(dragBaseX + e.clientX - dragStartClientX, 0), minX());
-            gsap.set(horizonTrack, { x: next });
-        });
+            gsap.set(ht, { x: next });
+        };
 
         const endDrag = () => {
             if (!isDragging) return;
             isDragging = false;
-            horizonTrack.classList.remove('is-dragging');
-            const x = gsap.getProperty(horizonTrack, 'x');
+            ht.classList.remove('is-dragging');
+            const x = gsap.getProperty(ht, 'x');
             let nearest = 0;
             let minD = Infinity;
             panelStepX().forEach((s) => {
                 const d = Math.abs(x - s);
                 if (d < minD) { minD = d; nearest = s; }
             });
-            gsap.to(horizonTrack, { x: nearest, duration: 0.7, ease: "power3.out" });
+            gsap.to(ht, { x: nearest, duration: 0.7, ease: "power3.out" });
         };
 
-        horizonTrack.addEventListener('pointerup', endDrag);
-        horizonTrack.addEventListener('pointercancel', endDrag);
+        existingUpHandler = endDrag;
+        existingCancelHandler = endDrag;
 
-        const stepProject = (dir) => {
+        ht.addEventListener('pointerdown', existingDragHandler);
+        ht.addEventListener('pointermove', existingMoveHandler);
+        ht.addEventListener('pointerup', existingUpHandler);
+        ht.addEventListener('pointercancel', existingCancelHandler);
+
+        projectStepHandler = (dir) => {
             if (playing) return;
             const steps = panelStepX();
             if (steps.length < 2) return;
-            const baseX = gsap.getProperty(horizonTrack, 'x');
+            const baseX = gsap.getProperty(ht, 'x');
             let idx = 0;
             let minD = Infinity;
             steps.forEach((s, i) => {
@@ -294,27 +317,31 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             const next = Math.min(steps.length - 1, Math.max(0, idx + dir));
             if (next === idx) return;
-            gsap.to(horizonTrack, { x: steps[next], duration: 0.7, ease: "power3.out" });
+            gsap.to(ht, { x: steps[next], duration: 0.7, ease: "power3.out" });
         };
-        projectStepHandler = stepProject;
     }
 
+    initProjects();
 
-    const projectItems = document.querySelectorAll('.project-list-item');
-    projectItems.forEach((item, i) => {
-        gsap.from(item, {
-            scrollTrigger: {
-                trigger: item,
-                start: "top 90%",
-                toggleActions: "play none none reverse"
-            },
-            y: 30,
-            opacity: 0,
-            duration: 0.7,
-            delay: i * 0.05,
-            ease: "power2.out"
+
+    function initMoreProjects() {
+        const projectItems = document.querySelectorAll('.project-list-item');
+        projectItems.forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: "top 90%",
+                    toggleActions: "play none none reverse"
+                },
+                y: 30,
+                opacity: 0,
+                duration: 0.7,
+                delay: i * 0.05,
+                ease: "power2.out"
+            });
         });
-    });
+    }
+    initMoreProjects();
 
 
     const magneticItems = document.querySelectorAll('.magnetic-wrap');
@@ -873,5 +900,20 @@ document.addEventListener("DOMContentLoaded", () => {
     ScrollTrigger.refresh();
     computeSnapTargets();
     updateProgress(0);
+
+    window.initProjects = function() {
+        initProjects();
+        ScrollTrigger.refresh();
+        computeSnapTargets();
+    };
+    window.initSectionLock = function() {
+        snapTargets = [];
+        computeSnapTargets();
+        currentStep = 0;
+        isLocked = false;
+        wheelBuffer = 0;
+        updateProgress(0);
+    };
+    window.initMoreProjects = initMoreProjects;
 
 });

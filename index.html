@@ -16,6 +16,7 @@
     <meta name="twitter:title" content="UD | Portfolio">
     <meta name="twitter:description" content="느낌 있는 코딩과 높은 품질의 로직을 자연어로 설계하는 개발자">
     <meta name="twitter:image" content="https://portfolio.ud-ss.me/api/og">
+    <meta name="robots" content="noindex, nofollow">
 
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -335,64 +336,7 @@
     <section id="projects" class="relative w-full h-screen bg-fg-light text-bg-light overflow-hidden">
 
         <div class="horizontal-pin-wrap absolute inset-0">
-            <div class="horizontal-scroll flex px-6 md:px-[min(100px,8vw)] gap-16 md:gap-24">
-
-
-                <div class="panel w-[85vw] md:w-[min(55vw,80vh)] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
-                    <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">01</span>
-                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-5 md:mb-7 relative group">
-                        <img src="https://cdn.jsdelivr.net/gh/UD-ss/UD-s-Portfolio@main/images/ud-space.png" alt="UD's Space" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" loading="lazy">
-                        <div class="project-hover-label">View Project</div>
-                    </div>
-                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-2 md:mb-3 tracking-tight">UD's Space</h3>
-                    <p class="text-muted-dark font-light text-base md:text-lg mb-4 md:mb-5 leading-relaxed max-w-lg">
-                        Node.js 기반 봇 클러스터 및 Supabase 연동 커뮤니티
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tag">Node.js</span>
-                        <span class="tag">Discord.js</span>
-                        <span class="tag">Supabase</span>
-                    </div>
-                </div>
-
-
-                <div class="panel w-[85vw] md:w-[min(55vw,80vh)] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
-                    <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">02</span>
-                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-5 md:mb-7 relative group">
-                        <img src="https://cdn.jsdelivr.net/gh/UD-ss/UD-s-Portfolio@main/images/manga-translate.png" alt="Manga-Translate" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" loading="lazy">
-                        <div class="project-hover-label">View Project</div>
-                    </div>
-                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-2 md:mb-3 tracking-tight">Manga-Translate</h3>
-                    <p class="text-muted-dark font-light text-base md:text-lg mb-4 md:mb-5 leading-relaxed max-w-lg">
-                        YOLOv8, Manga-OCR, LaMa Inpainting, 로컬 LLM 및 React Konva를 결합하여 이미지 내 텍스트를 실시간 감지·제거·번역·편집할 수 있는 풀스택 플랫폼.
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tag">React 19</span>
-                        <span class="tag">FastAPI</span>
-                        <span class="tag">YOLOv8</span>
-                        <span class="tag">PyTorch</span>
-                    </div>
-                </div>
-
-
-                <div class="panel w-[85vw] md:w-[min(55vw,80vh)] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target">
-                    <span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">03</span>
-                    <div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-5 md:mb-7 relative group flex items-center justify-center">
-                        <div class="text-center">
-                            <i data-lucide="lock" class="w-12 h-12 text-[#444] mx-auto mb-4"></i>
-                            <p class="text-[#555] text-sm font-light tracking-wider uppercase">Coming Soon</p>
-                        </div>
-                    </div>
-                    <h3 class="text-4xl md:text-6xl font-display font-bold mb-2 md:mb-3 tracking-tight">???</h3>
-                    <p class="text-muted-dark font-light text-base md:text-lg mb-4 md:mb-5 leading-relaxed max-w-lg">
-                        곧 공개 예정인 프로젝트입니다.
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="tag">TBA</span>
-                    </div>
-                </div>
-
-
+            <div id="project-panels" class="horizontal-scroll flex px-6 md:px-[min(100px,8vw)] gap-16 md:gap-24">
             </div>
         </div>
 
@@ -414,62 +358,7 @@
                 <h2 class="text-xs uppercase tracking-[0.3em] text-muted-light font-medium">More Projects</h2>
             </div>
 
-            <div class="project-list">
-                <a href="#" class="project-list-item group cursor-hover-target block py-10 border-t border-border-light relative overflow-hidden transition-colors duration-500">
-                    <div class="project-list-bg"></div>
-                    <div class="flex items-center justify-between relative z-10">
-                        <div>
-                            <h3 class="text-2xl md:text-4xl font-display font-semibold mb-2 transition-transform duration-500 group-hover:translate-x-4 tracking-tight">Automatic Illustration Sorter</h3>
-                            <p class="text-sm text-muted-light font-light transition-all duration-500 group-hover:translate-x-4">ONNX 듀얼 AI 캐스케이드 및 pHash 초고속 이미지 정렬</p>
-                        </div>
-                        <div class="flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <span class="text-xs uppercase tracking-widest text-muted-light hidden md:inline">Python · ONNX</span>
-                            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="#" class="project-list-item group cursor-hover-target block py-10 border-t border-border-light relative overflow-hidden transition-colors duration-500">
-                    <div class="project-list-bg"></div>
-                    <div class="flex items-center justify-between relative z-10">
-                        <div>
-                            <h3 class="text-2xl md:text-4xl font-display font-semibold mb-2 transition-transform duration-500 group-hover:translate-x-4 tracking-tight">AutoIllust</h3>
-                            <p class="text-sm text-muted-light font-light transition-all duration-500 group-hover:translate-x-4">로컬 LLM 자연어 쿼리 기반 멀티 플랫폼 이미지 수집 풀스택</p>
-                        </div>
-                        <div class="flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <span class="text-xs uppercase tracking-widest text-muted-light hidden md:inline">Ollama · FastAPI</span>
-                            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="#" class="project-list-item group cursor-hover-target block py-10 border-t border-border-light relative overflow-hidden transition-colors duration-500">
-                    <div class="project-list-bg"></div>
-                    <div class="flex items-center justify-between relative z-10">
-                        <div>
-                            <h3 class="text-2xl md:text-4xl font-display font-semibold mb-2 transition-transform duration-500 group-hover:translate-x-4 tracking-tight">Auto-DL</h3>
-                            <p class="text-sm text-muted-light font-light transition-all duration-500 group-hover:translate-x-4">Chrome MV3 File System Access API 기반 미디어 수집 확장 프로그램</p>
-                        </div>
-                        <div class="flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <span class="text-xs uppercase tracking-widest text-muted-light hidden md:inline">JS (MV3)</span>
-                            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="#" class="project-list-item group cursor-hover-target block py-10 border-t border-border-light border-b relative overflow-hidden transition-colors duration-500">
-                    <div class="project-list-bg"></div>
-                    <div class="flex items-center justify-between relative z-10">
-                        <div>
-                            <h3 class="text-2xl md:text-4xl font-display font-semibold mb-2 transition-transform duration-500 group-hover:translate-x-4 tracking-tight">Studio Diffusion & LoRA Trainer</h3>
-                            <p class="text-sm text-muted-light font-light transition-all duration-500 group-hover:translate-x-4">HuggingFace Diffusers SDXL/Pony WebGUI 및 LoRA 학습 파이프라인</p>
-                        </div>
-                        <div class="flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <span class="text-xs uppercase tracking-widest text-muted-light hidden md:inline">PyTorch</span>
-                            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-                </a>
+            <div id="more-project-list" class="project-list">
             </div>
         </div>
     </section>
@@ -527,5 +416,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/split-type"></script>
     <script src="script.js"></script>
+    <script>
+    (async function() {
+        try {
+            var res = await fetch('/api/projects');
+            var data = await res.json();
+            renderHighlightedPanels(data.highlighted || []);
+            renderMoreProjectList(data.more || []);
+            lucide.createIcons();
+            if (typeof initProjects === 'function') initProjects();
+            if (typeof initSectionLock === 'function') initSectionLock();
+            if (typeof initMoreProjects === 'function') initMoreProjects();
+        } catch (e) {
+            console.error('Failed to load projects:', e);
+        }
+    })();
+
+    function renderHighlightedPanels(list) {
+        var c = document.getElementById('project-panels');
+        if (!c) return;
+        list.forEach(function(p, i) {
+            var num = String(i + 1).padStart(2, '0');
+            if (p.placeholder) {
+                c.innerHTML += '<div class="panel w-[85vw] md:w-[min(55vw,80vh)] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target"><span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">' + num + '</span><div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-5 md:mb-7 relative group flex items-center justify-center"><div class="text-center"><i data-lucide="lock" class="w-12 h-12 text-[#444] mx-auto mb-4"></i><p class="text-[#555] text-sm font-light tracking-wider uppercase">Coming Soon</p></div></div><h3 class="text-4xl md:text-6xl font-display font-bold mb-2 md:mb-3 tracking-tight">' + escHtml(p.title) + '</h3><p class="text-muted-dark font-light text-base md:text-lg mb-4 md:mb-5 leading-relaxed max-w-lg">' + escHtml(p.description) + '</p><div class="flex flex-wrap gap-2">' + (p.tags||[]).map(function(t){return '<span class="tag">'+escHtml(t)+'</span>';}).join('') + '</div></div>';
+            } else {
+                var imgSrc = '';
+                if (p.image) {
+                    imgSrc = p.image.indexOf('http') === 0 ? p.image : 'https://cdn.jsdelivr.net/gh/UD-ss/UD-s-Portfolio@main/images/' + p.image;
+                }
+                var imgTag = imgSrc ? '<img src="' + escAttr(imgSrc) + '" alt="' + escAttr(p.title) + '" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" loading="lazy">' : '';
+                c.innerHTML += '<div class="panel w-[85vw] md:w-[min(55vw,80vh)] flex-shrink-0 flex flex-col justify-center relative cursor-hover-target"><span class="text-[8rem] md:text-[12rem] font-display font-bold absolute -top-16 -left-4 opacity-[0.06] select-none pointer-events-none leading-none">' + num + '</span><div class="aspect-[16/10] bg-[#1e1e1e] rounded-xl overflow-hidden mb-5 md:mb-7 relative group">' + imgTag + '<div class="project-hover-label">View Project</div></div><h3 class="text-4xl md:text-6xl font-display font-bold mb-2 md:mb-3 tracking-tight">' + escHtml(p.title) + '</h3><p class="text-muted-dark font-light text-base md:text-lg mb-4 md:mb-5 leading-relaxed max-w-lg">' + escHtml(p.description) + '</p><div class="flex flex-wrap gap-2">' + (p.tags||[]).map(function(t){return '<span class="tag">'+escHtml(t)+'</span>';}).join('') + '</div></div>';
+            }
+        });
+    }
+
+    function renderMoreProjectList(list) {
+        var c = document.getElementById('more-project-list');
+        if (!c) return;
+        list.forEach(function(p, i) {
+            var isLast = i === list.length - 1;
+            c.innerHTML += '<a href="' + escAttr(p.link || '#') + '" class="project-list-item group cursor-hover-target block py-10 border-t ' + (isLast ? 'border-b' : '') + ' border-border-light relative overflow-hidden transition-colors duration-500"><div class="project-list-bg"></div><div class="flex items-center justify-between relative z-10"><div><h3 class="text-2xl md:text-4xl font-display font-semibold mb-2 transition-transform duration-500 group-hover:translate-x-4 tracking-tight">' + escHtml(p.title) + '</h3><p class="text-sm text-muted-light font-light transition-all duration-500 group-hover:translate-x-4">' + escHtml(p.description) + '</p></div><div class="flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"><span class="text-xs uppercase tracking-widest text-muted-light hidden md:inline">' + escHtml(p.tech || '') + '</span><i data-lucide="arrow-up-right" class="w-5 h-5"></i></div></div></a>';
+        });
+    }
+
+    function escHtml(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    </script>
 </body>
 </html>
