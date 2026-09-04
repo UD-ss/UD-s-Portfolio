@@ -223,12 +223,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const minX = () => Math.min(0, ...panelStepX());
 
         let playing = false;
+        let autoPlayed = false;
 
         ScrollTrigger.create({
             trigger: projectsSection,
-            start: "top 55%",
-            once: true,
+            start: "top top",
+            end: "+=100%",
+            pin: true,
+            id: 'horizontal-pin',
             onEnter: () => {
+                if (autoPlayed) return;
+                autoPlayed = true;
                 const steps = panelStepX();
                 if (steps.length < 3) return;
                 playing = true;
