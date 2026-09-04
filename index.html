@@ -424,12 +424,12 @@
             renderHighlightedPanels(data.highlighted || []);
             renderMoreProjectList(data.more || []);
             lucide.createIcons();
-            if (typeof initProjects === 'function') initProjects();
-            if (typeof initSectionLock === 'function') initSectionLock();
-            if (typeof initMoreProjects === 'function') initMoreProjects();
         } catch (e) {
             console.error('Failed to load projects:', e);
         }
+        if (typeof window.initProjects === 'function') window.initProjects();
+        if (typeof window.initSectionLock === 'function') window.initSectionLock();
+        if (typeof window.initMoreProjects === 'function') window.initMoreProjects();
     })();
 
     function renderHighlightedPanels(list) {

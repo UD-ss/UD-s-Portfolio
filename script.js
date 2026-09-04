@@ -225,6 +225,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const ht = document.querySelector('.horizontal-scroll');
         if (!ps || !ht) return;
 
+        const panels = ht.querySelectorAll('.panel');
+        if (!panels.length) {
+            const oldST = ScrollTrigger.getById('horizontal-pin');
+            if (oldST) oldST.kill();
+            return;
+        }
+
         const oldST = ScrollTrigger.getById('horizontal-pin');
         if (oldST) oldST.kill();
 
@@ -321,10 +328,13 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-    initProjects();
-
 
     function initMoreProjects() {
+        ScrollTrigger.getAll().forEach(st => {
+            if (st.vars && st.vars.trigger && st.vars.trigger.classList && st.vars.trigger.classList.contains('project-list-item')) {
+                st.kill();
+            }
+        });
         const projectItems = document.querySelectorAll('.project-list-item');
         projectItems.forEach((item, i) => {
             gsap.from(item, {
@@ -341,7 +351,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
-    initMoreProjects();
 
 
     const magneticItems = document.querySelectorAll('.magnetic-wrap');
@@ -528,20 +537,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: true });
 
 
-    const navStepMap = {
-        '#hero': 0,
-        '#about': 1,
-        '#skills': 2,
-        '#projects': 3,
-        '#more-projects': 4,
-        '#contact': 5
+    const navSectionMap = {
+        '#hero': 'hero',
+        '#about': 'about',
+        '#skills': 'skills',
+        '#projects': 'projects',
+        '#more-projects': 'more-projects',
+        '#contact': 'contact'
     };
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', (e) => {
             e.preventDefault();
             const href = anchor.getAttribute('href');
-            if (navStepMap.hasOwnProperty(href)) {
-                goToStep(navStepMap[href]);
+            if (navSectionMap[href]) {
+                const sectionId = navSectionMap[href];
+                const targets = getSnapTargets();
+                const section = document.getElementById(sectionId);
+                if (!section) return;
+                const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+                let closest = 0;
+                let minDist = Infinity;
+                targets.forEach((t, i) => {
+                    const d = Math.abs(sectionTop - t);
+                    if (d < minDist) { minDist = d; closest = i; }
+                });
+                goToStep(closest);
             } else {
                 const target = document.querySelector(href);
                 if (target) lenis.scrollTo(target, { duration: 1.0 });
@@ -909,10 +929,17 @@ document.addEventListener("DOMContentLoaded", () => {
     window.initSectionLock = function() {
         snapTargets = [];
         computeSnapTargets();
-        currentStep = 0;
+        const scrollY = window.scrollY || window.pageYOffset;
+        let closest = 0;
+        let minDist = Infinity;
+        snapTargets.forEach((t, i) => {
+            const d = Math.abs(scrollY - t);
+            if (d < minDist) { minDist = d; closest = i; }
+        });
+        currentStep = closest;
         isLocked = false;
         wheelBuffer = 0;
-        updateProgress(0);
+        updateProgress(closest);
     };
     window.initMoreProjects = initMoreProjects;
 
