@@ -1,33 +1,21 @@
 const { list, put } = require('@vercel/blob');
-const { TOTP, Secret } = require('otpauth');
 
-const SESSION_TTL = 24 * 60 * 60 * 1000;
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const ALLOWED_EXT = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
-
-function getTOTP() {
-    const secret = process.env.TOTP_SECRET;
-    if (!secret) return null;
-    return new TOTP({ issuer: 'Portfolio', label: 'admin', algorithm: 'SHA1', digits: 6, period: 30, secret: Secret.fromBase32(secret) });
-}
-
-function jsonRes(res, status, data) {
-    res.status(status).json(data);
-}
-
+function jsonRes(res, status, data) { res.status(status).json(data); }
 function setCors(res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
+const SESSION_TTL = 24 * 60 * 60 * 1000;
+
 async function readSession(token) {
     if (!token) return null;
     try {
         const { blobs } = await list({ prefix: 'sessions/' });
-        const sessionBlob = blobs.find(b => b.url.includes(token));
+        const sessionBlob = blobs.find(function(b) { return b.url.indexOf(token) !== -1; });
         if (!sessionBlob) return null;
-        const r = await fetch(sessionBlob.url, { headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` } });
+        const r = await fetch(sessionBlob.url, { headers: { Authorization: 'Bearer ' + process.env.BLOB_READ_WRITE_TOKEN } });
         const data = await r.json();
         if (Date.now() - data.createdAt > SESSION_TTL) return null;
         return data;
@@ -40,7 +28,7 @@ async function readProjects() {
     try {
         const { blobs } = await list({ prefix: 'projects.json' });
         if (!blobs.length) return null;
-        const r = await fetch(blobs[0].url, { headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` } });
+        const r = await fetch(blobs[0].url, { headers: { Authorization: 'Bearer ' + process.env.BLOB_READ_WRITE_TOKEN } });
         return await r.json();
     } catch (e) {
         return null;
@@ -67,125 +55,33 @@ function readDefaultProjects() {
     };
 }
 
-async function handleGet(req, res) {
-    const data = await readProjects();
-    jsonRes(res, 200, data || readDefaultProjects());
-}
-
-async function handleAuth(req, res) {
-    const totp = getTOTP();
-    if (!totp) return jsonRes(res, 500, { error: 'TOTP_SECRET not set' });
-
-    let body = req.body || {};
-    if (typeof body === 'string') try { body = JSON.parse(body); } catch (e) { body = {}; }
-
-    const { code } = body;
-    if (!code || typeof code !== 'string') return jsonRes(res, 400, { error: 'Code required' });
-
-    const delta = totp.validate({ token: code, window: 1 });
-    if (delta === null) return jsonRes(res, 401, { error: 'Invalid code' });
-
-    const token = Array.from({ length: 32 }, () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]).join('');
-    await put(`sessions/${token}.json`, JSON.stringify({ token, createdAt: Date.now() }), { access: 'private', addRandomSuffix: false, allowOverwrite: true });
-
-    jsonRes(res, 200, { ok: true, token });
-}
-
-async function handleSave(req, res) {
-    const auth = req.headers.authorization || '';
-    const token = auth.replace('Bearer ', '');
-    const session = await readSession(token);
-    if (!session) return jsonRes(res, 401, { error: 'Unauthorized' });
-
-    let body = req.body || {};
-    if (typeof body === 'string') try { body = JSON.parse(body); } catch (e) { body = {}; }
-
-    if (!body.highlighted || !Array.isArray(body.highlighted)) return jsonRes(res, 400, { error: 'highlighted array required' });
-    if (!body.more || !Array.isArray(body.more)) return jsonRes(res, 400, { error: 'more array required' });
-
-    await writeProjects(body);
-    jsonRes(res, 200, { ok: true });
-}
-
-async function handleUpload(req, res) {
-    const auth = req.headers.authorization || '';
-    const token = auth.replace('Bearer ', '');
-    const session = await readSession(token);
-    if (!session) return jsonRes(res, 401, { error: 'Unauthorized' });
-
-    try {
-        const chunks = [];
-        const reader = req.body.getReader ? req.body.getReader() : null;
-        if (reader) {
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                chunks.push(value);
-            }
-        }
-    } catch (e) {}
-
-    const contentType = req.headers['content-type'] || '';
-    if (!contentType.includes('multipart/form-data')) return jsonRes(res, 400, { error: 'multipart/form-data required' });
-
-    let buffer;
-    try {
-        const chunks = [];
-        await new Promise((resolve, reject) => {
-            req.on('data', chunk => chunks.push(chunk));
-            req.on('end', resolve);
-            req.on('error', reject);
-        });
-        buffer = Buffer.concat(chunks);
-    } catch (e) {
-        return jsonRes(res, 400, { error: 'Failed to read body' });
-    }
-
-    const boundary = contentType.split('boundary=')[1];
-    if (!boundary) return jsonRes(res, 400, { error: 'No boundary' });
-
-    const parts = buffer.toString('binary').split('--' + boundary);
-    for (const part of parts) {
-        const filenameMatch = part.match(/filename="(.+?)"/);
-        if (!filenameMatch) continue;
-        const filename = filenameMatch[1];
-        const ext = filename.split('.').pop().toLowerCase();
-        if (!ALLOWED_EXT.includes(ext)) return jsonRes(res, 400, { error: `Invalid extension: ${ext}` });
-
-        const headerEnd = part.indexOf('\r\n\r\n');
-        if (headerEnd === -1) continue;
-        const fileData = part.slice(headerEnd + 4);
-        const cleanData = fileData.replace(/\r\n$/, '');
-
-        if (Buffer.byteLength(cleanData, 'binary') > MAX_FILE_SIZE) return jsonRes(res, 400, { error: 'File too large (max 5MB)' });
-
-        const safeName = `projects/${Date.now()}-${filename.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-        await put(safeName, Buffer.from(cleanData, 'binary'), { access: 'public', addRandomSuffix: false, allowOverwrite: true });
-
-        const { blobs } = await list({ prefix: safeName });
-        const url = blobs.length ? blobs[0].url : '';
-        return jsonRes(res, 200, { ok: true, url });
-    }
-
-    return jsonRes(res, 400, { error: 'No file found' });
-}
-
 module.exports = async (req, res) => {
     setCors(res);
-
     if (req.method === 'OPTIONS') { res.status(204).end(); return; }
 
-    const url = new URL(req.url, `https://${req.headers.host}`);
-
     try {
-        if (url.pathname === '/api/projects/auth' && req.method === 'POST') return await handleAuth(req, res);
-        if (url.pathname === '/api/projects/upload' && req.method === 'POST') return await handleUpload(req, res);
-        if (url.pathname === '/api/projects') {
-            if (req.method === 'GET') return await handleGet(req, res);
-            if (req.method === 'POST') return await handleSave(req, res);
+        if (req.method === 'GET') {
+            const data = await readProjects();
+            return jsonRes(res, 200, data || readDefaultProjects());
         }
 
-        jsonRes(res, 404, { error: 'Not found' });
+        if (req.method === 'POST') {
+            const auth = req.headers.authorization || '';
+            const token = auth.replace('Bearer ', '');
+            const session = await readSession(token);
+            if (!session) return jsonRes(res, 401, { error: 'Unauthorized' });
+
+            let body = req.body || {};
+            if (typeof body === 'string') try { body = JSON.parse(body); } catch (e) { body = {}; }
+
+            if (!body.highlighted || !Array.isArray(body.highlighted)) return jsonRes(res, 400, { error: 'highlighted array required' });
+            if (!body.more || !Array.isArray(body.more)) return jsonRes(res, 400, { error: 'more array required' });
+
+            await writeProjects(body);
+            return jsonRes(res, 200, { ok: true });
+        }
+
+        jsonRes(res, 405, { error: 'Method not allowed' });
     } catch (e) {
         jsonRes(res, 500, { error: String(e && e.message || e) });
     }

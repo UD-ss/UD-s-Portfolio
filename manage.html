@@ -374,7 +374,7 @@
         const dropZone = container.querySelector(`[data-upload-area="${index}"]`);
         if (dropZone) dropZone.innerHTML = '<p class="text-muted text-xs">업로드 중...</p>';
 
-        fetch(BASE + '/api/projects/upload', {
+        fetch(BASE + '/api/upload', {
             method: 'POST',
             headers: { 'Authorization': 'Bearer ' + token },
             body: formData
@@ -696,7 +696,7 @@
         $('#btn-login').disabled = true;
         $('#btn-login').textContent = '로그인 중...';
 
-        makeApi('/api/projects/auth', {
+        makeApi('/api/auth', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ code })
