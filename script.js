@@ -110,14 +110,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function initHeroAnimations() {
-        const names = ["UD", "ユーディー", "유디"];
+        let names = ["UD", "ユーディー", "유디"];
+        let interval = 3500;
         let nameIndex = 0;
+        let cycleTimer = null;
         const heroName = document.getElementById('hero-name');
 
-        if (heroName) {
-            gsap.fromTo(heroName, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, ease: "power3.out" });
-
-            setInterval(() => {
+        function startCycle() {
+            if (cycleTimer) clearInterval(cycleTimer);
+            if (!heroName) return;
+            cycleTimer = setInterval(() => {
                 gsap.to(heroName, {
                     y: -15,
                     opacity: 0,
@@ -132,8 +134,22 @@ document.addEventListener("DOMContentLoaded", () => {
                         );
                     }
                 });
-            }, 3500);
+            }, interval);
         }
+
+        if (heroName) {
+            gsap.fromTo(heroName, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, ease: "power3.out" });
+            startCycle();
+        }
+
+        // 동적 히어로 설정 적용
+        window.applyHeroConfig = function(newNames, newInterval) {
+            if (Array.isArray(newNames) && newNames.length) names = newNames;
+            if (typeof newInterval === 'number' && newInterval > 500) interval = newInterval;
+            nameIndex = 0;
+            if (heroName && names.length) heroName.innerText = names[0];
+            startCycle();
+        };
 
         const heroSubtitle = document.getElementById('hero-subtitle');
         if (heroSubtitle) {
@@ -470,6 +486,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     window.addEventListener('wheel', (e) => {
+        if (skillPopupOpen) { wheelBuffer = 0; return; }
+
         e.preventDefault();
         e.lenisStopPropagation = true;
 
@@ -477,8 +495,6 @@ document.addEventListener("DOMContentLoaded", () => {
             projectStepHandler(e.deltaX > 0 ? 1 : -1);
             return;
         }
-
-        if (skillPopupOpen) { wheelBuffer = 0; return; }
 
         const now = performance.now();
         const dt = Math.max(now - lastWheelAt, 0);
@@ -588,13 +604,8 @@ document.addEventListener("DOMContentLoaded", () => {
     drawerOverlay.addEventListener('click', closeDrawer);
 
     mobileDrawer.querySelectorAll('.drawer-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
+        link.addEventListener('click', () => {
             closeDrawer();
-            const href = link.getAttribute('href');
-            if (navStepMap.hasOwnProperty(href)) {
-                setTimeout(() => goToStep(navStepMap[href]), 100);
-            }
         });
     });
 
@@ -899,9 +910,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!vcTotal || !vcToday || !vcWrap) return;
 
         if (!sessionStorage.getItem('vc-counted')) {
-            sessionStorage.setItem('vc-counted', '1');
             try {
-                await fetch('/api/counter', { method: 'POST', keepalive: true });
+                const pr = await fetch('/api/counter', { method: 'POST' });
+                if (pr.ok) sessionStorage.setItem('vc-counted', '1');
             } catch (e) {}
         }
 
@@ -911,12 +922,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const d = await r.json();
                 vcTotal.textContent = d.total || 0;
                 vcToday.textContent = d.today || 0;
-                vcWrap.style.opacity = '1';
             }
         } catch (e) {}
+        vcWrap.style.opacity = '1';
     }
     initVisitorCounter();
 
+    initProjects();
+    initMoreProjects();
     ScrollTrigger.refresh();
     computeSnapTargets();
     updateProgress(0);

@@ -1,5 +1,8 @@
 {
     "private": true,
+    "scripts": {
+        "test": "node test-auth.js && node test-projects.js && node test-upload.js && node test-log.js && node test-counter.js && node test-config.js && node test-security.js"
+    },
     "dependencies": {
         "@vercel/blob": "^2.8.0",
         "opentype.js": "^2.0.0",

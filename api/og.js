@@ -1,8 +1,28 @@
 const sharp = require('sharp');
 const opentype = require('opentype.js');
+const { list } = require('@vercel/blob');
 
 let fontRegular = null;
 let fontBold = null;
+let configCache = null;
+let configCacheTime = 0;
+const CONFIG_CACHE_TTL = 60000;
+
+async function readConfig() {
+    if (configCache && Date.now() - configCacheTime < CONFIG_CACHE_TTL) return configCache;
+    try {
+        const { blobs } = await list({ prefix: 'config.json' });
+        const file = blobs.find(function(b) { return b.pathname === 'config.json'; });
+        if (!file) return null;
+        const r = await fetch(file.url, { headers: { Authorization: 'Bearer ' + process.env.BLOB_READ_WRITE_TOKEN } });
+        if (!r.ok) return null;
+        configCache = await r.json();
+        configCacheTime = Date.now();
+        return configCache;
+    } catch (e) {
+        return null;
+    }
+}
 
 async function getFonts() {
     if (fontRegular && fontBold) return { fontRegular, fontBold };
@@ -61,34 +81,34 @@ function wrapText(text, maxChars = 24) {
 
 module.exports = async (req, res) => {
     try {
-        const url = new URL(req.url, `https://${req.headers.host}`);
+        const host = req.headers.host || 'localhost';
+        const url = new URL(req.url, `https://${host}`);
         const sp = url.searchParams;
 
-        const title = sp.get('title') || 'UD';
-        const desc = sp.get('desc') || '느낌 있는 코딩과 높은 품질의 로직을 자연어로 설계하는 개발자';
+        const cfg = await readConfig();
+        const seoDefaults = cfg && cfg.seo ? cfg.seo : {};
+        const themeDefaults = cfg && cfg.theme ? cfg.theme : {};
+        const ffDefaults = cfg && cfg.fireflies ? cfg.fireflies : {};
+
+        const title = (sp.get('title') || seoDefaults.title || 'UD').replace(/<[^>]*>/g, '').slice(0, 50);
+        const desc = (sp.get('desc') || seoDefaults.description || '느낌 있는 코딩과 높은 품질의 로직을 자연어로 설계하는 개발자').replace(/<[^>]*>/g, '').slice(0, 150);
         const theme = sp.get('theme') || 'dark';
 
         const isDark = theme === 'dark';
-        const bgColor = isDark ? '#1c1e20' : '#ece7dd';
-        const bgColor2 = isDark ? '#242629' : '#e3ddd3';
-        const fgColor = isDark ? '#e6e3de' : '#211d18';
-        const mutedColor = isDark ? '#9b968e' : '#8a8378';
+        const themeVars = isDark ? (themeDefaults.dark || {}) : (themeDefaults.light || {});
 
-        const ffColors = isDark ? [
-            '#3b82f6',
-            '#06b6d4',
-            '#818cf8',
-            '#a78bfa',
-            '#22d3ee',
-            '#60a5fa'
-        ] : [
-            '#d4a574',
-            '#e8917a',
-            '#c9908f',
-            '#c4886b',
-            '#d4a08a',
-            '#c9a07a'
-        ];
+        const bgColor = themeVars.bg || (isDark ? '#1c1e20' : '#ece7dd');
+        const bgColor2 = themeVars.cardBg || (isDark ? '#242629' : '#e3ddd3');
+        const fgColor = themeVars.fg || (isDark ? '#e6e3de' : '#211d18');
+        const mutedColor = themeVars.muted || (isDark ? '#9b968e' : '#8a8378');
+
+        const defaultFfDark = ['#3b82f6','#06b6d4','#818cf8','#a78bfa','#22d3ee','#60a5fa'];
+        const defaultFfLight = ['#d4a574','#e8917a','#c9908f','#c4886b','#d4a08a','#c9a07a'];
+        const rawFfColors = isDark ? (ffDefaults.darkColors || defaultFfDark) : (ffDefaults.lightColors || defaultFfLight);
+        const ffColors = rawFfColors.map(function(c) {
+            if (typeof c !== 'string') return '#3b82f6';
+            return c.length === 9 ? c.slice(0, 7) : c.slice(0, 7);
+        }).slice(0, 6);
 
         const { fontRegular, fontBold } = await getFonts();
 
@@ -159,6 +179,6 @@ module.exports = async (req, res) => {
         res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
         res.status(200).send(png);
     } catch (e) {
-        res.status(500).json({ error: String(e && e.message || e), stack: String(e && e.stack || '') });
+        res.status(500).json({ error: 'Failed to generate OG image' });
     }
 };
