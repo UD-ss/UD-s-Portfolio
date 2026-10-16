@@ -10,18 +10,10 @@
       ]
     },
     {
-      "source": "/(index\\.html|script\\.js|style\\.css|content\\.js|theme-init\\.js|tailwind\\.config\\.js)",
+      "source": "/(index\\.html|script\\.js|style\\.css|theme-init\\.js|tailwind\\.config\\.js)",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' cdn.tailwindcss.com unpkg.com cdnjs.cloudflare.com cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.jsdelivr.net; font-src 'self' fonts.gstatic.com cdn.jsdelivr.net data:; img-src 'self' blob.vercel-cdn.com *.blob.vercel-storage.com cdn.jsdelivr.net cdn.simpleicons.org data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'" }
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' cdn.tailwindcss.com unpkg.com cdnjs.cloudflare.com cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.jsdelivr.net; font-src 'self' fonts.gstatic.com cdn.jsdelivr.net data:; img-src 'self' cdn.jsdelivr.net cdn.simpleicons.org data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'" }
       ]
     }
-  ],
-  "redirects": [
-    { "source": "/admin", "destination": "/", "permanent": false },
-    { "source": "/admin/:path*", "destination": "/", "permanent": false }
-  ],
-  "rewrites": [
-    { "source": "/admin/", "destination": "https://admin.ud-ss.me/" },
-    { "source": "/admin/:path*", "destination": "https://admin.ud-ss.me/:path*" }
   ]
 }

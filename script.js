@@ -119,15 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
             startCycle();
         }
 
-        // 동적 히어로 설정 적용
-        window.applyHeroConfig = function(newNames, newInterval) {
-            if (Array.isArray(newNames) && newNames.length) names = newNames;
-            if (typeof newInterval === 'number' && newInterval > 500) interval = newInterval;
-            nameIndex = 0;
-            if (heroName && names.length) heroName.innerText = names[0];
-            startCycle();
-        };
-
         const heroSubtitle = document.getElementById('hero-subtitle');
         if (heroSubtitle) {
             const split = new SplitType(heroSubtitle, { types: 'words' });
@@ -910,27 +901,5 @@ document.addEventListener("DOMContentLoaded", () => {
     ScrollTrigger.refresh();
     computeSnapTargets();
     updateProgress(0);
-
-    window.initProjects = function() {
-        initProjects();
-        ScrollTrigger.refresh();
-        computeSnapTargets();
-    };
-    window.initSectionLock = function() {
-        snapTargets = [];
-        computeSnapTargets();
-        const scrollY = window.scrollY || window.pageYOffset;
-        let closest = 0;
-        let minDist = Infinity;
-        snapTargets.forEach((t, i) => {
-            const d = Math.abs(scrollY - t);
-            if (d < minDist) { minDist = d; closest = i; }
-        });
-        currentStep = closest;
-        isLocked = false;
-        wheelBuffer = 0;
-        updateProgress(closest);
-    };
-    window.initMoreProjects = initMoreProjects;
 
 });
