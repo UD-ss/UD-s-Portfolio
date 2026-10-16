@@ -1,12 +1,12 @@
 {
     "private": true,
     "scripts": {
-        "test": "node test-auth.js && node test-projects.js && node test-upload.js && node test-log.js && node test-counter.js && node test-config.js && node test-security.js"
+        "test": "node test-site.js && node test-counter.js",
+        "validate": "node test-site.js"
     },
     "dependencies": {
         "@vercel/blob": "^2.8.0",
         "opentype.js": "^2.0.0",
-        "otpauth": "^9.5.2",
-        "sharp": "^0.35.4"
+        "sharp": "^0.35.5"
     }
 }

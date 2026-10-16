@@ -1,6 +1,7 @@
 const sharp = require('sharp');
 const opentype = require('opentype.js');
 const { list } = require('@vercel/blob');
+const repoSite = require('../../data/site.json');
 
 let fontRegular = null;
 let fontBold = null;
@@ -8,7 +9,9 @@ let configCache = null;
 let configCacheTime = 0;
 const CONFIG_CACHE_TTL = 60000;
 
-async function readConfig() {
+const SITE_KEYS = ['theme', 'hero', 'about', 'skills', 'contact', 'footer', 'navigation', 'fireflies', 'cursor', 'seo'];
+
+async function readSite() {
     if (configCache && Date.now() - configCacheTime < CONFIG_CACHE_TTL) return configCache;
     try {
         const { blobs } = await list({ prefix: 'config.json' });
@@ -16,12 +19,41 @@ async function readConfig() {
         if (!file) return null;
         const r = await fetch(file.url, { headers: { Authorization: 'Bearer ' + process.env.BLOB_READ_WRITE_TOKEN } });
         if (!r.ok) return null;
-        configCache = await r.json();
+        const data = await r.json();
+        for (const key of SITE_KEYS) {
+            if (!data || data[key] === undefined) return null;
+        }
+        configCache = data;
         configCacheTime = Date.now();
-        return configCache;
+        return data;
     } catch (e) {
         return null;
     }
+}
+
+const COLOR_RE = /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
+const FALLBACK = {
+    light: { bg: '#ece7dd', cardBg: '#e3ddd3', fg: '#211d18', muted: '#8a8378' },
+    dark: { bg: '#1c1e20', cardBg: '#242629', fg: '#e6e3de', muted: '#9b968e' }
+};
+const FALLBACK_FIREFLIES = {
+    light: ['#d4a574', '#e8917a', '#c9908f', '#c4886b', '#d4a08a', '#c9a07a'],
+    dark: ['#3b82f6', '#06b6d4', '#818cf8', '#a78bfa', '#22d3ee', '#60a5fa']
+};
+
+function color(value, fallback) {
+    return typeof value === 'string' && COLOR_RE.test(value.trim()) ? value.trim() : fallback;
+}
+
+function plain(value, maxLen) {
+    if (typeof value !== 'string') return '';
+    return value.replace(/[\u0000-\u001f\u007f]/g, ' ').slice(0, maxLen);
+}
+
+function pick(list, fallbackList) {
+    if (!Array.isArray(list)) return fallbackList;
+    const out = list.map(function(c) { return color(c, null); }).filter(Boolean).slice(0, 6);
+    return out.length ? out : fallbackList;
 }
 
 async function getFonts() {
@@ -31,10 +63,7 @@ async function getFonts() {
         fetch('https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/woff/Pretendard-Bold.woff'),
     ]);
     if (!regRes.ok || !boldRes.ok) throw new Error('Font fetch failed');
-    const [regBuf, boldBuf] = await Promise.all([
-        regRes.arrayBuffer(),
-        boldRes.arrayBuffer(),
-    ]);
+    const [regBuf, boldBuf] = await Promise.all([regRes.arrayBuffer(), boldRes.arrayBuffer()]);
     fontRegular = opentype.parse(Buffer.from(regBuf).buffer);
     fontBold = opentype.parse(Buffer.from(boldBuf).buffer);
     return { fontRegular, fontBold };
@@ -81,54 +110,40 @@ function wrapText(text, maxChars = 24) {
 
 module.exports = async (req, res) => {
     try {
-        const host = req.headers.host || 'localhost';
-        const url = new URL(req.url, `https://${host}`);
+        const url = new URL(req.url || '/api/og', 'https://portfolio.ud-ss.me');
         const sp = url.searchParams;
 
-        const cfg = await readConfig();
-        const seoDefaults = cfg && cfg.seo ? cfg.seo : {};
-        const themeDefaults = cfg && cfg.theme ? cfg.theme : {};
-        const ffDefaults = cfg && cfg.fireflies ? cfg.fireflies : {};
+        const site = (await readSite()) || repoSite;
+        const seo = site.seo || {};
+        const isDark = (sp.get('theme') || 'dark') === 'dark';
+        const themeVars = (site.theme || {})[isDark ? 'dark' : 'light'] || {};
+        const fb = isDark ? FALLBACK.dark : FALLBACK.light;
 
-        const title = (sp.get('title') || seoDefaults.title || 'UD').replace(/<[^>]*>/g, '').slice(0, 50);
-        const desc = (sp.get('desc') || seoDefaults.description || '느낌 있는 코딩과 높은 품질의 로직을 자연어로 설계하는 개발자').replace(/<[^>]*>/g, '').slice(0, 150);
-        const theme = sp.get('theme') || 'dark';
+        const title = plain(sp.get('title') || seo.title || 'UD', 50);
+        const desc = plain(sp.get('desc') || seo.description || '', 150);
 
-        const isDark = theme === 'dark';
-        const themeVars = isDark ? (themeDefaults.dark || {}) : (themeDefaults.light || {});
+        const bgColor = color(themeVars.bg, fb.bg);
+        const bgColor2 = color(themeVars.cardBg, fb.cardBg);
+        const fgColor = color(themeVars.fg, fb.fg);
+        const mutedColor = color(themeVars.muted, fb.muted);
 
-        const bgColor = themeVars.bg || (isDark ? '#1c1e20' : '#ece7dd');
-        const bgColor2 = themeVars.cardBg || (isDark ? '#242629' : '#e3ddd3');
-        const fgColor = themeVars.fg || (isDark ? '#e6e3de' : '#211d18');
-        const mutedColor = themeVars.muted || (isDark ? '#9b968e' : '#8a8378');
-
-        const defaultFfDark = ['#3b82f6','#06b6d4','#818cf8','#a78bfa','#22d3ee','#60a5fa'];
-        const defaultFfLight = ['#d4a574','#e8917a','#c9908f','#c4886b','#d4a08a','#c9a07a'];
-        const rawFfColors = isDark ? (ffDefaults.darkColors || defaultFfDark) : (ffDefaults.lightColors || defaultFfLight);
-        const ffColors = rawFfColors.map(function(c) {
-            if (typeof c !== 'string') return '#3b82f6';
-            return c.length === 9 ? c.slice(0, 7) : c.slice(0, 7);
-        }).slice(0, 6);
+        const ff = site.fireflies || {};
+        const ffColors = pick(isDark ? ff.darkColors : ff.lightColors, isDark ? FALLBACK_FIREFLIES.dark : FALLBACK_FIREFLIES.light);
 
         const { fontRegular, fontBold } = await getFonts();
 
         const titleFontSize = title.length <= 4 ? 160 : (title.length <= 10 ? 96 : 64);
         const titleW = measureText(fontBold, title, titleFontSize);
-        const titleX = (1200 - titleW) / 2;
-        const titleY = 300;
-        const titleP = textToPath(fontBold, title, titleX, titleY, titleFontSize);
+        const titleP = textToPath(fontBold, title, (1200 - titleW) / 2, 300, titleFontSize);
 
-        const descLines = wrapText(desc, 24);
-        const descSvgs = descLines.map((line, idx) => {
+        const descSvgs = wrapText(desc, 24).map((line, idx) => {
             const lw = measureText(fontRegular, line, 22);
-            const lx = (1200 - lw) / 2;
-            const ly = 392 + idx * 36;
-            const lp = textToPath(fontRegular, line, lx, ly, 22);
+            const lp = textToPath(fontRegular, line, (1200 - lw) / 2, 392 + idx * 36, 22);
             return `<g fill="${mutedColor}">${lp}</g>`;
         }).join('');
 
-        const scrollLabel = textToPath(fontRegular, 'SCROLL', 0, 0, 11);
         const scrollW = measureText(fontRegular, 'SCROLL', 11);
+        const scrollLabel = textToPath(fontRegular, 'SCROLL', 0, 0, 11);
 
         const noiseSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch"/></filter><rect width="200" height="200" filter="url(%23n)" opacity="${isDark ? '0.04' : '0.025'}"/></svg>`;
         const noiseBase64 = Buffer.from(noiseSvg).toString('base64');
@@ -176,7 +191,7 @@ module.exports = async (req, res) => {
         const png = await sharp(Buffer.from(svg)).png().toBuffer();
 
         res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Cache-Control', 'public, immutable, no-transform, max-age=31536000');
+        res.setHeader('Cache-Control', 'public, max-age=3600');
         res.status(200).send(png);
     } catch (e) {
         res.status(500).json({ error: 'Failed to generate OG image' });
